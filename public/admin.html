@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BanaiDibo Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0f14;--surface:#13161e;--card:#1a1d27;--border:#252836;
+  --accent:#f97316;--accent2:#fb923c;--green:#22c55e;--red:#ef4444;
+  --yellow:#eab308;--text:#f1f5f9;--muted:#94a3b8;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh}
+.hidden{display:none!important}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;border:none;cursor:pointer;font-family:var(--font-body);font-weight:500;font-size:15px;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{opacity:.85}
+.btn-success{background:var(--green);color:#fff}.btn-success:hover{opacity:.85}
+.btn-sm{padding:7px 14px;font-size:13px}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.tag-pending{background:rgba(234,179,8,.15);color:var(--yellow)}
+.tag-accepted{background:rgba(34,197,94,.15);color:var(--green)}
+.tag-rejected{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba(13,15,20,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:var(--font-head);font-size:20px;font-weight:800;text-decoration:none;color:var(--text)}
+.nav-logo span{color:var(--accent)}
+.nav-back{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.nav-back:hover{color:var(--text)}
+
+/* LOGIN */
+#loginWrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:400px}
+.login-title{font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:4px}
+.login-title span{color:var(--accent)}
+.login-sub{color:var(--muted);font-size:14px;margin-bottom:32px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:8px}
+.form-group input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-family:var(--font-body);font-size:15px;outline:none;transition:border-color .2s}
+.form-group input:focus{border-color:var(--accent)}
+.login-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--red);margin-bottom:16px}
+
+/* DASHBOARD */
+#dashboard{padding-top:64px}
+.dash-wrap{max-width:1100px;margin:0 auto;padding:40px 5%}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px}
+.dash-title{font-family:var(--font-head);font-size:26px;font-weight:800}
+.dash-sub{color:var(--muted);font-size:14px;margin-top:4px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px}
+.stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:20px}
+.stat-num{font-family:var(--font-head);font-size:28px;font-weight:800}
+.stat-lbl{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* FILTER */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.filter-btn{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all .2s}
+.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(249,115,22,.08)}
+.search-input{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;width:220px}
+.search-input:focus{border-color:var(--accent)}
+
+/* REQUEST CARDS */
+.requests-list{display:flex;flex-direction:column;gap:14px}
+.request-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:22px}
+.request-card.status-accepted{border-left:4px solid var(--green)}
+.request-card.status-rejected{border-left:4px solid var(--red)}
+.rc-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.rc-name{font-family:var(--font-head);font-size:17px;font-weight:700}
+.rc-service{font-size:13px;color:var(--accent);font-weight:500;margin-top:2px}
+.rc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.rc-field{font-size:13px;color:var(--muted)}
+.rc-field strong{color:var(--text);font-weight:500;display:block;margin-bottom:2px}
+.rc-issue{font-size:14px;background:rgba(255,255,255,.03);border-radius:8px;padding:10px 14px;color:var(--muted);border:1px solid var(--border);margin-bottom:16px}
+.rc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .emoji{font-size:48px;margin-bottom:16px}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:32px;max-width:480px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:20px}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--surface);border:none;color:var(--muted);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{color:var(--text)}
+.detail-row{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start}
+.detail-key{font-size:13px;color:var(--muted);width:100px;flex-shrink:0;padding-top:1px}
+.detail-val{font-size:14px;color:var(--text);flex:1;word-break:break-word}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 20px;font-size:14px;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:320px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{border-color:var(--green);color:var(--green)}
+#toast.error{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/"><span style="color:var(--text)">Banai</span><span>Dibo</span></a>
+  <a class="nav-back" href="/">← Back to Site</a>
+</nav>
+
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div id="loginWrap">
+  <div class="login-box">
+    <div class="login-title">Banai<span>Dibo</span> Admin</div>
+    <div class="login-sub">Admin access only. Enter your password to continue.</div>
+    <div id="loginError" class="login-error hidden">❌ Incorrect password. Please try again.</div>
+    <div class="form-group">
+      <label>Admin Password</label>
+      <input type="password" id="adminPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Log In →</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+  <div class="dash-wrap">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">📋 BanaiDibo Dashboard</div>
+        <div class="dash-sub">Manage all service requests</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">Log Out</button>
+    </div>
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('pending',this)">Pending</button>
+      <button class="filter-btn" onclick="setFilter('accepted',this)">Accepted</button>
+      <button class="filter-btn" onclick="setFilter('rejected',this)">Rejected</button>
+      <input class="search-input" id="searchInput" placeholder="🔍 Search name, service..." oninput="renderList()"/>
+      <button class="btn btn-outline btn-sm" onclick="loadRequests()" style="margin-left:auto">🔄 Refresh</button>
+    </div>
+
+    <div class="requests-list" id="requestsList"><div class="loading">Loading…</div></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="detailModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>📋 Request Details</h3>
+    <div id="modalContent"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+let allRequests = [];
+let currentFilter = 'all';
+let loggedIn = false;
+
+// ─── Auth ───
+async function doLogin(){
+  const password = document.getElementById('adminPass').value;
+
+  try {
+    const res = await fetch('/.netlify/functions/auth', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username: 'admin', password })
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      localStorage.setItem("adminToken", data.token);
+
+      document.getElementById('loginWrap').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+
+      loadRequests();
+    } else {
+      throw new Error();
+    }
+  } catch {
+    document.getElementById('loginError').classList.remove('hidden');
+  }
+}
+function doLogout(){
+  loggedIn = false;
+  allRequests = [];
+  localStorage.removeItem("adminToken");
+  document.getElementById('loginWrap').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('adminPass').value = '';
+}
+
+// ─── Load from server ───
+async function loadRequests(){
+  document.getElementById('requestsList').innerHTML = '<div class="loading">Loading…</div>';
+
+  const token = localStorage.getItem("adminToken");
+
+  try {
+    const res = await fetch('/.netlify/functions/requests', {
+      headers: {
+        "Authorization": token
+      }
+    });
+    if (res.status === 403) {
+  doLogout();
+  return;
+  }
+    allRequests = await res.json();
+    renderStats();
+    renderList();
+  } catch(e){
+    document.getElementById('requestsList').innerHTML = '<div class="empty-state"><div class="emoji">⚠️</div><div>Failed to load requests. Is the server running?</div></div>';
+    showToast('❌ Could not load requests','error');
+  }
+}
+
+// ─── Stats ───
+function renderStats(){
+  const total = allRequests.length;
+  const pending = allRequests.filter(r=>r.status==='pending').length;
+  const accepted = allRequests.filter(r=>r.status==='accepted').length;
+  const rejected = allRequests.filter(r=>r.status==='rejected').length;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-num" style="color:var(--text)">${total}</div><div class="stat-lbl">Total Requests</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--yellow)">${pending}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${accepted}</div><div class="stat-lbl">Accepted</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${rejected}</div><div class="stat-lbl">Rejected</div></div>
+  `;
+}
+
+// ─── Filter & Render ───
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+function renderList(){
+  const q = (document.getElementById('searchInput').value||'').toLowerCase();
+  let reqs = [...allRequests];
+
+  if(currentFilter !== 'all') reqs = reqs.filter(r=>r.status===currentFilter);
+  if(q) reqs = reqs.filter(r=>(r.name+r.service+r.location+r.phone+r.issue).toLowerCase().includes(q));
+
+  const list = document.getElementById('requestsList');
+  if(!reqs.length){
+    list.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><div>No requests found</div></div>`;
+    return;
+  }
+
+  list.innerHTML = reqs.map(r=>`
+    <div class="request-card status-${r.status}" id="card-${r.id}">
+      <div class="rc-top">
+        <div>
+          <div class="rc-name">${esc(r.name)}</div>
+          <div class="rc-service">${serviceIcon(r.service)} ${esc(r.service)}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="tag tag-${r.status}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>
+        </div>
+      </div>
+      <div class="rc-grid">
+        <div class="rc-field"><strong>📞 Phone</strong>${esc(r.phone)}</div>
+        <div class="rc-field"><strong>📍 Location</strong>${esc(r.location)}</div>
+        ${r.whatsapp?`<div class="rc-field"><strong>💬 WhatsApp</strong>${esc(r.whatsapp)}</div>`:''}
+      </div>
+      <div class="rc-issue">📝 ${esc(r.issue)}</div>
+      <div class="rc-actions">
+        ${r.status!=='accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus('${r.id}','accepted')">✅ Accept</button>`:''}
+        ${r.status!=='rejected'?`<button class="btn btn-danger btn-sm" onclick="updateStatus('${r.id}','rejected')">❌ Reject</button>`:''}
+        <button class="btn btn-outline btn-sm" onclick="contactWA('${r.id}')">💬 WhatsApp</button>
+        <button class="btn btn-outline btn-sm" onclick="viewDetail('${r.id}')">🔍 Details</button>
+        <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:rgba(239,68,68,.3)" onclick="deleteReq('${r.id}')">🗑️ Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── Actions ───
+async function updateStatus(id, status){
+  const token = localStorage.getItem("adminToken"); // ✅ get token
+
+  try {
+    const res = await fetch(`/request/${id}`, {
+      method:'PATCH',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization': token   // ✅ send token
+      },
+      body: JSON.stringify({ status })
+    });
+
+    if(!res.ok) throw new Error();
+
+    const r = allRequests.find(x=>x.id===id);
+    if(r){
+      r.status = status;
+
+      // Send WhatsApp notification
+      let num = (r.whatsapp||r.phone).replace(/\D/g,'');
+      if(num.length===10) num='91'+num;
+
+      const msg = status==='accepted'
+        ? `Hello ${r.name},\n\nYour ${r.service} request has been ACCEPTED ✅\n\nOur team will contact you shortly.\n\n– banaidibo`
+        : `Hello ${r.name},\n\nWe're sorry 😔\n\nYour ${r.service} request could not be processed at the moment. You can try again later.\n\n– banaidibo`;
+
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
+    }
+
+    renderStats();
+    renderList();
+    showToast(`Request ${status}.`,'success');
+
+  } catch {
+    showToast('❌ Failed to update status','error');
+  }
+}
+async function deleteReq(id){
+  const token = localStorage.getItem("adminToken");
+
+  try {
+    const res = await fetch(`/request/${id}`, {
+      method:'DELETE',
+      headers:{ 'Authorization': token }
+    });
+
+    if(!res.ok) throw new Error();
+
+    allRequests = allRequests.filter(r=>r.id!==id);
+    renderStats();
+    renderList();
+    showToast('Request deleted.','success');
+
+  } catch {
+    showToast('❌ Failed to delete','error');
+  }
+}
+
+function contactWA(id){
+  const r = allRequests.find(x=>x.id===id);
+  if(!r) return;
+  let num=(r.whatsapp||r.phone).replace(/\D/g,'');
+  if(num.length===10) num='91'+num;
+  const msg=`Hello ${r.name},\n\nThis is FixMate regarding your ${r.service} request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}\n\nWe are ready to help you 👍`;
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function viewDetail(id){
+  const r = allRequests.find(x=>x.id===id);
+  if(!r) return;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="detail-row"><div class="detail-key">Request ID</div><div class="detail-val" style="color:var(--accent);font-weight:600">${r.id}</div></div>
+    <div class="detail-row"><div class="detail-key">Name</div><div class="detail-val">${esc(r.name)}</div></div>
+    <div class="detail-row"><div class="detail-key">Service</div><div class="detail-val">${serviceIcon(r.service)} ${esc(r.service)}</div></div>
+    <div class="detail-row"><div class="detail-key">Phone</div><div class="detail-val"><a href="tel:${esc(r.phone)}" style="color:var(--accent)">${esc(r.phone)}</a></div></div>
+    <div class="detail-row"><div class="detail-key">Location</div><div class="detail-val">${esc(r.location)}</div></div>
+    ${r.whatsapp?`<div class="detail-row"><div class="detail-key">WhatsApp</div><div class="detail-val">${esc(r.whatsapp)}</div></div>`:''}
+    <div class="detail-row"><div class="detail-key">Issue</div><div class="detail-val">${esc(r.issue)}</div></div>
+    <div class="detail-row"><div class="detail-key">Status</div><div class="detail-val"><span class="tag tag-${r.status}">${r.status}</span></div></div>
+    <div class="detail-row"><div class="detail-key">Submitted</div><div class="detail-val">${new Date(r.createdAt).toLocaleString()}</div></div>
+  `;
+  document.getElementById('modalActions').innerHTML=`
+    ${r.status!=='accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus('${r.id}','accepted');closeModal()">✅ Accept</button>`:''}
+    ${r.status!=='rejected'?`<button class="btn btn-danger btn-sm" onclick="updateStatus('${r.id}','rejected');closeModal()">❌ Reject</button>`:''}
+    <button class="btn btn-primary btn-sm" onclick="contactWA('${r.id}')">💬 WhatsApp</button>
+    <button class="btn btn-outline btn-sm" style="color:var(--red)" onclick="deleteReq('${r.id}');closeModal()">🗑️ Delete</button>
+  `;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+function closeModal(){ document.getElementById('detailModal').classList.add('hidden'); }
+
+// ─── Helpers ───
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function serviceIcon(s){
+  return {'Electrician':'⚡','Plumber':'🔧','House Painting':'🎨','AC Repair':'❄️','Carpenter':'🪑','CCTV Repair':'📷','Mobile Repair':'📱'}[s]||'🔩';
+}
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show '+(type==='error'?'error':'success');
+  setTimeout(()=>{ t.className=''; },3500);
+}
+
+// Enter key on password
+document.getElementById('adminPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+window.onload = () => {
+  const token = localStorage.getItem("adminToken");
+
+  if (token) {
+    document.getElementById('loginWrap').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    loadRequests();
+  }
+};
+</script>
+</body>
+</html>

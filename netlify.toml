@@ -1,0 +1,39 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[dev]
+  publish = "public"
+  functions = "netlify/functions"
+  port = 8888
+
+# API routes → Netlify Functions
+[[redirects]]
+  from = "/request"
+  to = "/.netlify/functions/requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/request/:id"
+  to = "/.netlify/functions/requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/requests"
+  to = "/.netlify/functions/requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/login"
+  to = "/.netlify/functions/auth"
+  status = 200
+  force = true
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

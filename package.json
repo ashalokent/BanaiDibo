@@ -1,0 +1,8 @@
+{
+  "name": "banaidibo",
+  "version": "1.0.0",
+  "description": "BanaiDibo – Local Services Platform",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
