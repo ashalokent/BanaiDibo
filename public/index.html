@@ -359,7 +359,7 @@ async function submitRequest(){
   btn.textContent='Submitting...';
 
   try {
-    const res = await fetch('/.netlify/functions/requests', {
+    const res = await fetch('/request', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({service,name,phone,location,issue,whatsapp:whatsapp||null})
