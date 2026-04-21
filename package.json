@@ -11,7 +11,7 @@
     "deploy": "netlify deploy --prod"
   },
   "dependencies": {
-    "@netlify/blobs": "^8.1.0"
+    "@netlify/blobs": "^8.2.0"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"
