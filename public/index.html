@@ -331,7 +331,9 @@ function showPage(p){
   document.getElementById('pageRequest').classList.toggle('hidden',p!=='request');
   window.scrollTo(0,0);
 }
-
+function handleServiceChange(){
+  // you can leave it empty for now
+}
 function toggleMenu(){ document.getElementById('navLinks').classList.toggle('open'); }
 function closeMenu(){ document.getElementById('navLinks').classList.remove('open'); }
 function scrollToServices(){ showPage('home'); setTimeout(()=>document.getElementById('servicesSection').scrollIntoView({behavior:'smooth'}),100); }
@@ -357,7 +359,7 @@ async function submitRequest(){
   btn.textContent='Submitting...';
 
   try {
-    const res = await fetch('/.netlify/functions/request', {
+    const res = await fetch('/.netlify/functions/requests', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({service,name,phone,location,issue,whatsapp:whatsapp||null})
