@@ -7,7 +7,7 @@ const { getStore } = require("@netlify/blobs");
 function isAdmin(event) {
   // Frontend sends the full "Bearer <password>" string as the token
   const auth = event.headers["authorization"] || "";
-  const expected = `Bearer ${process.env.ADMIN_PASSWORD}`;
+  const expected = `Bearer ${process.env.ADMIN_PASS}`;
   return auth === expected;
 }
 
