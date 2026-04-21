@@ -8,33 +8,36 @@
   functions = "netlify/functions"
   port = 8888
 
-# ── API routes → Netlify Functions ──
+# ── API routes → Netlify Functions ──────────────────────────────────────────
 
 [[redirects]]
   from = "/admin/login"
   to = "/.netlify/functions/auth"
   status = 200
+  force = true
 
-# List all requests (GET) or create new request (POST)
+# List all (GET) or create new (POST)
 [[redirects]]
   from = "/requests"
   to = "/.netlify/functions/requests"
   status = 200
+  force = true
 
-# Public form submits to /request (POST) — same function
+# Public form submit (POST)
 [[redirects]]
   from = "/request"
   to = "/.netlify/functions/requests"
   status = 200
+  force = true
 
-# Single request by ID: GET, PATCH, DELETE
+# Single request by ID: PATCH, DELETE
 [[redirects]]
   from = "/request/:id"
   to = "/.netlify/functions/requests?id=:id"
   status = 200
   force = true
 
-# SPA fallback (ALWAYS LAST)
+# SPA fallback — MUST be last
 [[redirects]]
   from = "/*"
   to = "/index.html"
