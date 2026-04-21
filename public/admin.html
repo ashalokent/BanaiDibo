@@ -297,7 +297,7 @@ async function updateStatus(id, status){
   const token = localStorage.getItem("adminToken"); // ✅ get token
 
   try {
-    const res = await fetch(`/request/${id}`, {
+    const res = await fetch(`/.netlify/functions/requests?id=${id}`, {
       method:'PATCH',
       headers:{
         'Content-Type':'application/json',
@@ -335,7 +335,7 @@ async function deleteReq(id){
   const token = localStorage.getItem("adminToken");
 
   try {
-    const res = await fetch(`/request/${id}`, {
+    const res = await fetch(`/.netlify/functions/requests?id=${id}`, {
       method:'DELETE',
       headers:{ 'Authorization': token }
     });
