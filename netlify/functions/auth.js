@@ -21,7 +21,7 @@ exports.handler = async (event) => {
   }
 
   const { password } = body;
-  const correctPassword = process.env.ADMIN_PASSWORD;
+  const correctPassword = process.env.ADMIN_PASS;
 
   if (!correctPassword) {
     console.error("ADMIN_PASSWORD environment variable is not set!");
