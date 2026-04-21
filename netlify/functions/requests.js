@@ -1,64 +1,53 @@
 // netlify/functions/requests.js
-// Uses @netlify/blobs for persistent storage across serverless invocations.
-// Set ADMIN_PASS in your Netlify environment variables (same value as auth.js uses).
+// Persistent storage via @netlify/blobs  — works on Netlify's hosted platform.
+// Required env var: ADMIN_PASS  (set in Netlify → Site config → Environment variables)
 
 const { getStore } = require("@netlify/blobs");
 
-// ─── helpers ────────────────────────────────────────────────────────────────
-
+// ─── Auth helper ─────────────────────────────────────────────────────────────
 function isAdmin(event) {
-  const auth = event.headers["authorization"] || event.headers["Authorization"] || "";
-  const correctPassword = process.env.ADMIN_PASS;
-  if (!correctPassword) return false;
-  // Token is stored / sent as "Bearer <password>"
-  return auth === `Bearer ${correctPassword}`;
+  const auth =
+    event.headers["authorization"] ||
+    event.headers["Authorization"] ||
+    "";
+  const pw = process.env.ADMIN_PASS;
+  if (!pw) return false;
+  return auth === `Bearer ${pw}`;
 }
 
-async function getAllRequests(store) {
-  const { blobs } = await store.list();
-  const items = await Promise.all(
-    blobs.map(async (b) => {
-      try {
-        const raw = await store.get(b.key);
-        return JSON.parse(raw);
-      } catch {
-        return null;
-      }
-    })
-  );
-  // Filter nulls and sort newest first
-  return items
-    .filter(Boolean)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-}
+// ─── CORS headers (allow your own domain + admin panel) ──────────────────────
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+  "Content-Type": "application/json",
+};
 
-// ─── handler ────────────────────────────────────────────────────────────────
-
+// ─── Main handler ────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
   const method = event.httpMethod;
+
+  // Handle preflight
+  if (method === "OPTIONS") {
+    return { statusCode: 204, headers: CORS, body: "" };
+  }
+
   const id = event.queryStringParameters?.id || null;
 
-  // Netlify Blobs store — name must be consistent
-  const store = getStore("banaidibo-requests");
-
-  // ── GET all (admin only) ──────────────────────────────────────────────────
-  if (method === "GET" && !id) {
-    if (!isAdmin(event)) {
-      return {
-        statusCode: 403,
-        body: JSON.stringify({ error: "Forbidden" }),
-      };
-    }
-
-    const requests = await getAllRequests(store);
+  // getStore works automatically on Netlify hosted — no extra config needed
+  let store;
+  try {
+    store = getStore("banaidibo-requests");
+  } catch (err) {
+    console.error("Blobs init error:", err);
     return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requests),
+      statusCode: 500,
+      headers: CORS,
+      body: JSON.stringify({ error: "Storage unavailable", detail: err.message }),
     };
   }
 
-  // ── POST — create new request (public) ───────────────────────────────────
+  // ── POST — submit a new service request (public) ────────────────────────
   if (method === "POST") {
     let body;
     try {
@@ -66,6 +55,7 @@ exports.handler = async (event) => {
     } catch {
       return {
         statusCode: 400,
+        headers: CORS,
         body: JSON.stringify({ error: "Invalid JSON" }),
       };
     }
@@ -75,37 +65,88 @@ exports.handler = async (event) => {
     if (!name || !phone || !service || !location || !issue) {
       return {
         statusCode: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: CORS,
         body: JSON.stringify({ error: "Missing required fields" }),
       };
     }
 
     const newReq = {
       id: Date.now().toString(),
-      name,
-      phone,
+      name: name.trim(),
+      phone: phone.trim(),
       service,
-      location,
-      issue,
-      whatsapp: whatsapp || null,
+      location: location.trim(),
+      issue: issue.trim(),
+      whatsapp: whatsapp ? whatsapp.trim() : null,
       status: "pending",
       createdAt: new Date().toISOString(),
     };
 
-    await store.set(newReq.id, JSON.stringify(newReq));
+    try {
+      await store.set(newReq.id, JSON.stringify(newReq));
+    } catch (err) {
+      console.error("Blobs set error:", err);
+      return {
+        statusCode: 500,
+        headers: CORS,
+        body: JSON.stringify({ error: "Failed to save request", detail: err.message }),
+      };
+    }
 
     return {
       statusCode: 201,
-      headers: { "Content-Type": "application/json" },
+      headers: CORS,
       body: JSON.stringify({ success: true }),
     };
   }
 
-  // ── PATCH — update status (admin only) ───────────────────────────────────
+  // ── GET all — admin only ────────────────────────────────────────────────
+  if (method === "GET" && !id) {
+    if (!isAdmin(event)) {
+      return {
+        statusCode: 403,
+        headers: CORS,
+        body: JSON.stringify({ error: "Forbidden" }),
+      };
+    }
+
+    try {
+      const { blobs } = await store.list();
+      const items = await Promise.all(
+        blobs.map(async (b) => {
+          try {
+            const raw = await store.get(b.key);
+            return JSON.parse(raw);
+          } catch {
+            return null;
+          }
+        })
+      );
+      const sorted = items
+        .filter(Boolean)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      return {
+        statusCode: 200,
+        headers: CORS,
+        body: JSON.stringify(sorted),
+      };
+    } catch (err) {
+      console.error("Blobs list error:", err);
+      return {
+        statusCode: 500,
+        headers: CORS,
+        body: JSON.stringify({ error: "Failed to load requests", detail: err.message }),
+      };
+    }
+  }
+
+  // ── PATCH — update status, admin only ──────────────────────────────────
   if (method === "PATCH" && id) {
     if (!isAdmin(event)) {
       return {
         statusCode: 403,
+        headers: CORS,
         body: JSON.stringify({ error: "Forbidden" }),
       };
     }
@@ -116,52 +157,70 @@ exports.handler = async (event) => {
     } catch {
       return {
         statusCode: 400,
+        headers: CORS,
         body: JSON.stringify({ error: "Invalid JSON" }),
       };
     }
 
-    const existing = await store.get(id);
-    if (!existing) {
+    try {
+      const existing = await store.get(id);
+      if (!existing) {
+        return {
+          statusCode: 404,
+          headers: CORS,
+          body: JSON.stringify({ error: "Request not found" }),
+        };
+      }
+      const req = JSON.parse(existing);
+      if (body.status) req.status = body.status;
+      req.updatedAt = new Date().toISOString();
+      await store.set(id, JSON.stringify(req));
+
       return {
-        statusCode: 404,
-        body: JSON.stringify({ error: "Request not found" }),
+        statusCode: 200,
+        headers: CORS,
+        body: JSON.stringify({ success: true, request: req }),
+      };
+    } catch (err) {
+      console.error("Blobs patch error:", err);
+      return {
+        statusCode: 500,
+        headers: CORS,
+        body: JSON.stringify({ error: "Failed to update", detail: err.message }),
       };
     }
-
-    const req = JSON.parse(existing);
-    if (body.status) req.status = body.status;
-    req.updatedAt = new Date().toISOString();
-
-    await store.set(id, JSON.stringify(req));
-
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ success: true, request: req }),
-    };
   }
 
-  // ── DELETE (admin only) ───────────────────────────────────────────────────
+  // ── DELETE — admin only ─────────────────────────────────────────────────
   if (method === "DELETE" && id) {
     if (!isAdmin(event)) {
       return {
         statusCode: 403,
+        headers: CORS,
         body: JSON.stringify({ error: "Forbidden" }),
       };
     }
 
-    await store.delete(id);
-
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ success: true }),
-    };
+    try {
+      await store.delete(id);
+      return {
+        statusCode: 200,
+        headers: CORS,
+        body: JSON.stringify({ success: true }),
+      };
+    } catch (err) {
+      console.error("Blobs delete error:", err);
+      return {
+        statusCode: 500,
+        headers: CORS,
+        body: JSON.stringify({ error: "Failed to delete", detail: err.message }),
+      };
+    }
   }
 
-  // ── Fallback ──────────────────────────────────────────────────────────────
   return {
     statusCode: 405,
+    headers: CORS,
     body: JSON.stringify({ error: "Method not allowed" }),
   };
 };
