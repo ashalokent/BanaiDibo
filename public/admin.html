@@ -205,6 +205,10 @@ async function loadRequests(){
   document.getElementById('requestsList').innerHTML = '<div class="loading">Loading…</div>';
 
   const token = localStorage.getItem("adminToken");
+  if (!token) {
+  doLogout();
+  return;
+}
 
   try {
     const res = await fetch('/.netlify/functions/requests', {

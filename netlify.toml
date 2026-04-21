@@ -1,5 +1,6 @@
 [build]
   publish = "public"
+  command = "echo 'No build step'"
   functions = "netlify/functions"
 
 [dev]
@@ -7,32 +8,33 @@
   functions = "netlify/functions"
   port = 8888
 
-# API routes → Netlify Functions
-[[redirects]]
-  from = "/request"
-  to = "/.netlify/functions/requests"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/request/:id"
-  to = "/.netlify/functions/requests"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/requests"
-  to = "/.netlify/functions/requests"
-  status = 200
-  force = true
+# ── API routes → Netlify Functions ──
 
 [[redirects]]
   from = "/admin/login"
   to = "/.netlify/functions/auth"
   status = 200
+
+# List all requests (GET) or create new request (POST)
+[[redirects]]
+  from = "/requests"
+  to = "/.netlify/functions/requests"
+  status = 200
+
+# Public form submits to /request (POST) — same function
+[[redirects]]
+  from = "/request"
+  to = "/.netlify/functions/requests"
+  status = 200
+
+# Single request by ID: GET, PATCH, DELETE
+[[redirects]]
+  from = "/request/:id"
+  to = "/.netlify/functions/requests?id=:id"
+  status = 200
   force = true
 
-# SPA fallback
+# SPA fallback (ALWAYS LAST)
 [[redirects]]
   from = "/*"
   to = "/index.html"

@@ -1,48 +1,48 @@
 // netlify/functions/auth.js
-// Handles: POST /admin/login
+// Set ADMIN_PASSWORD in your Netlify environment variables
 
 exports.handler = async (event) => {
-  const headers = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-  };
-
-  if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers, body: "" };
-  }
-
+  // Only allow POST
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed" }) };
-  }
-
-  const ADMIN_USER = process.env.ADMIN_USER || "admin";
-  const ADMIN_PASS = process.env.ADMIN_PASS;
-  const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
-
-  if (!ADMIN_PASS || !ADMIN_TOKEN) {
-    console.error("ADMIN_PASS and ADMIN_TOKEN env vars are not set.");
-    return { statusCode: 500, headers, body: JSON.stringify({ error: "Server misconfigured" }) };
-  }
-
-  try {
-    const { username, password } = JSON.parse(event.body || "{}");
-
-    if (username === ADMIN_USER && password === ADMIN_PASS) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ success: true, token: ADMIN_TOKEN }),
-      };
-    }
-
     return {
-      statusCode: 401,
-      headers,
-      body: JSON.stringify({ error: "Invalid credentials" }),
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
-  } catch {
-    return { statusCode: 400, headers, body: JSON.stringify({ error: "Bad request" }) };
   }
+
+  let body;
+  try {
+    body = JSON.parse(event.body || "{}");
+  } catch {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Invalid JSON" }),
+    };
+  }
+
+  const { password } = body;
+  const correctPassword = process.env.ADMIN_PASSWORD;
+
+  if (!correctPassword) {
+    console.error("ADMIN_PASSWORD environment variable is not set!");
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Server misconfiguration" }),
+    };
+  }
+
+  if (password === correctPassword) {
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      // Return the password as the token — frontend stores it and sends as Bearer token
+      body: JSON.stringify({ success: true, token: `Bearer ${correctPassword}` }),
+    };
+  }
+
+  return {
+    statusCode: 401,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ success: false, error: "Invalid password" }),
+  };
 };
