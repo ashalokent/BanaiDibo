@@ -344,7 +344,7 @@ function contactWA(id){
   let num=(r.whatsapp||r.phone).replace(/\D/g,'');
   if(num.length===10) num='91'+num;
   // Fixed: was "FixMate" — now correctly "BanaiDibo"
-  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your ${r.service} request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}\n\nWe are ready to help you 👍`;
+  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your ${r.service} request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}\n\nOur team will contact you shortly 👍`;
   window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
