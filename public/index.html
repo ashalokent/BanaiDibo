@@ -524,7 +524,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
         </div>
 
         <div class="form-group">
-          <label>ID Number <span style="color:var(--muted);font-size:12px">(optional — for reference)</span></label>
+          <label>ID Number <span style="color:var(--muted);font-size:12px">(For reference)</span></label>
           <input type="text" id="r_idnum" placeholder="e.g. XXXX-XXXX-XXXX " style="letter-spacing:1px"/>
         </div>
 
@@ -646,16 +646,22 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
         </div>
 
         <div class="form-group">
-          <label>Your Signature *</label>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Draw your signature below using mouse or finger</p>
-          <div class="sig-pad-wrap">
-            <canvas id="sigCanvas" width="700" height="160"></canvas>
-            <div class="sig-controls">
-              <button class="sig-btn" onclick="clearSig()">🗑️ Clear</button>
-            </div>
-          </div>
-          <div class="field-error" id="re_sig">Please draw your signature above.</div>
-        </div>
+  <label>Your Signature *</label>
+
+  <div class="photo-upload-area" onclick="document.getElementById('r_photo').click()">
+    <input type="file" id="r_photo" accept=".jpg,.jpeg,.png" style="display:none" onchange="handlePhotoUpload(event)"/>
+
+    <div id="photoPlaceholder">
+      <div class="upload-icon">✍️</div>
+      <p>Click to upload your signature</p>
+      <small>JPG or PNG • Max 2MB • Clear signature</small>
+    </div>
+
+    <img id="sigPreview" class="photo-preview hidden" alt="Signature Preview"/>
+  </div>
+
+  <div class="field-error" id="re_sig">Please upload your signature above.</div>
+</div>
 
         <div class="form-group">
           <label>Date of Filling *</label>
@@ -727,11 +733,10 @@ function showPage(p){
   window.scrollTo(0,0);
   if(p==='pros') loadPros();
   if(p==='register'){
-    const today=new Date().toISOString().split('T')[0];
-    document.getElementById('r_date').value=today;
-    document.getElementById('r_date').max=today;
-    initSigPad();
-  }
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('r_date').value=today;
+  document.getElementById('r_date').max=today;
+}
 }
 
 // ── Show preferred date field for all services ──
@@ -832,7 +837,7 @@ buildServicesGrid();
 let currentStep = 1;
 const TOTAL_STEPS = 5;
 let photoDataUrl = null;
-let sigCanvas, sigCtx, sigDrawing = false, sigHasContent = false;
+let signatureDataUrl = null;
 
 function updateStepUI(step) {
   for(let i=1;i<=TOTAL_STEPS;i++){
@@ -922,46 +927,32 @@ function handlePhotoUpload(e){
   };
   reader.readAsDataURL(file);
 }
+function handleSignatureUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
 
-let sigInited = false;
-function initSigPad(){
-  if(sigInited) return;
-  sigInited=true;
-  sigCanvas=document.getElementById('sigCanvas');
-  sigCtx=sigCanvas.getContext('2d');
-  // Resize canvas to actual display size
-  const resize=()=>{
-    const w=sigCanvas.offsetWidth;
-    sigCanvas.width=w; sigCanvas.height=160;
-    sigCtx.strokeStyle='#f1f5f9';
-    sigCtx.lineWidth=2.5;
-    sigCtx.lineCap='round';
+  if(file.size > 2 * 1024 * 1024){
+    showToast('❌ Signature must be under 2MB','error');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    signatureDataUrl = ev.target.result;
+
+    const img = document.getElementById('sigPreview');
+    img.src = signatureDataUrl;
+    img.classList.remove('hidden');
+
+    document.getElementById('re_sig').style.display='none';
   };
-  resize();
 
-  const getPos=(e)=>{
-    const r=sigCanvas.getBoundingClientRect();
-    const src=e.touches?e.touches[0]:e;
-    return{x:src.clientX-r.left,y:src.clientY-r.top};
-  };
-  sigCanvas.addEventListener('mousedown',e=>{sigDrawing=true;const p=getPos(e);sigCtx.beginPath();sigCtx.moveTo(p.x,p.y);});
-  sigCanvas.addEventListener('mousemove',e=>{if(!sigDrawing)return;const p=getPos(e);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();sigHasContent=true;});
-  sigCanvas.addEventListener('mouseup',()=>{sigDrawing=false;});
-  sigCanvas.addEventListener('touchstart',e=>{e.preventDefault();sigDrawing=true;const p=getPos(e);sigCtx.beginPath();sigCtx.moveTo(p.x,p.y);},{passive:false});
-  sigCanvas.addEventListener('touchmove',e=>{e.preventDefault();if(!sigDrawing)return;const p=getPos(e);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();sigHasContent=true;},{passive:false});
-  sigCanvas.addEventListener('touchend',()=>{sigDrawing=false;});
+  reader.readAsDataURL(file);
 }
-
-function clearSig(){
-  if(!sigCtx) return;
-  sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
-  sigHasContent=false;
-}
-
 async function submitRegistration(){
   // Validate step 5
   if(!photoDataUrl){ document.getElementById('re_photo').style.display='block'; showToast('❗ Please upload your passport photo.','error'); return; }
-  if(!sigHasContent){ document.getElementById('re_sig').style.display='block'; showToast('❗ Please draw your signature.','error'); return; }
+  if(!signatureDataUrl){ document.getElementById('re_sig').style.display='block'; showToast('❗ Please upload your signature.','error'); return; }
   const date=document.getElementById('r_date').value;
   if(!date){ showError('r_date','re_date'); showToast('❗ Please select the date.','error'); return; }
   if(!document.getElementById('r_agree').checked){ document.getElementById('re_agree').style.display='block'; showToast('❗ Please agree to the declaration.','error'); return; }
@@ -981,7 +972,7 @@ async function submitRegistration(){
     readiness: document.querySelector('input[name="readiness"]:checked')?.value||'',
     ownTools: document.querySelector('input[name="ownTools"]:checked')?.value||'',
     photoUrl: photoDataUrl,
-    signatureUrl: sigCanvas.toDataURL(),
+    signatureUrl: signatureDataUrl, // For simplicity, using the same upload for both. In production, you'd want separate fields and validations.
     filledDate: date,
   };
 

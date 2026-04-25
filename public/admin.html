@@ -241,7 +241,7 @@ async function loadRequests(){
 
   try {
     const res = await fetch('/.netlify/functions/requests', {
-      headers: { "Authorization": token }
+      headers: { "Authorization": `Bearer ${token}` }
     });
     if(res.status === 403 || res.status === 401){ doLogout(); return; }
     allRequests = await res.json();
@@ -323,7 +323,8 @@ async function updateStatus(id, status){
   try {
     const res = await fetch(`/.netlify/functions/requests?id=${id}`, {
       method:'PATCH',
-      headers:{ 'Content-Type':'application/json', 'Authorization': token },
+      headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` 
+     },
       body: JSON.stringify({ status })
     });
     if(!res.ok) throw new Error();
@@ -352,7 +353,7 @@ async function deleteReq(id){
   try {
     const res = await fetch(`/.netlify/functions/requests?id=${id}`, {
       method:'DELETE',
-      headers:{ 'Authorization': token }
+     headers: { "Authorization": `Bearer ${token}` }
     });
     if(!res.ok) throw new Error();
     allRequests = allRequests.filter(r=>r.id!==id);
@@ -446,7 +447,7 @@ async function loadPros(){
   if(!token){ doLogout(); return; }
   try{
     const res = await fetch('/.netlify/functions/professionals?all=true', {
-      headers:{ "Authorization": token }
+      headers: { "Authorization": `Bearer ${token}` }
     });
     if(res.status===403||res.status===401){ doLogout(); return; }
     allPros = await res.json();
@@ -490,7 +491,7 @@ function renderPros(){
   const el=document.getElementById('prosList');
   if(!list.length){ el.innerHTML='<div class="empty-state"><div class="emoji">📭</div><div>No professionals found.</div></div>'; return; }
 
-  const profIcon=(p)=>({'Electrician':'⚡','Plumber':'🔧','House Painter':'🎨','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱'}[p]||'🔩');
+  const profIcon=(p)=>({'Electrician':'⚡','Plumber':'🔧','House Painter':'🏠','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱'}[p]||'🔩');
 
   el.innerHTML = list.map(p=>{
     const avg=p.reviews&&p.reviews.length?(p.reviews.reduce((s,r)=>s+r.rating,0)/p.reviews.length).toFixed(1):null;
@@ -535,7 +536,7 @@ async function updateProStatus(id, status){
   try{
     const res=await fetch(`/.netlify/functions/professionals?id=${id}`,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','Authorization':token},
+      headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
       body:JSON.stringify({status})
     });
     if(!res.ok) throw new Error();
@@ -560,7 +561,7 @@ async function deletePro(id){
   const token=localStorage.getItem("adminToken");
   try{
     const res=await fetch(`/.netlify/functions/professionals?id=${id}`,{
-      method:'DELETE', headers:{'Authorization':token}
+      method:'DELETE', headers: { "Authorization": `Bearer ${token}` }
     });
     if(!res.ok) throw new Error();
     allPros=allPros.filter(p=>p.id!==id);
