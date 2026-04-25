@@ -6,13 +6,23 @@ const { getStore } = require("@netlify/blobs");
 
 // ─── Auth helper ─────────────────────────────────────────────────────────────
 function isAdmin(event) {
-  const auth =
-    event.headers["authorization"] ||
-    event.headers["Authorization"] ||
-    "";
-  const pw = process.env.ADMIN_PASS;
-  if (!pw) return false;
-  return auth === `Bearer ${pw}`;
+  const authHeader =
+    event.headers.authorization ||
+    event.headers.Authorization;
+
+  const ADMIN_PASS = process.env.ADMIN_PASS;
+
+  // No password set on server
+  if (!ADMIN_PASS) return false;
+
+  // Missing or wrong format
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return false;
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  return token === ADMIN_PASS;
 }
 
 // ─── CORS headers ─────────────────────────────────────────────────────────────
