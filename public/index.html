@@ -24,7 +24,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 /* NAV */
 #mainNav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba(13,15,20,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px}
-.nav-logo{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--text);text-decoration:none}
+.nav-logo{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--text);text-decoration:none;cursor:pointer}
 .nav-logo span{color:var(--accent)}
 .nav-links{display:flex;gap:6px;align-items:center}
 .nav-links a{color:var(--muted);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:14px;transition:all .2s;cursor:pointer}
@@ -88,6 +88,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .success-icon{font-size:24px;flex-shrink:0}
 .success-banner h4{font-weight:600;margin-bottom:4px;color:var(--green)}
 .success-banner p{font-size:14px;color:var(--muted)}
+/* Field error */
+.field-error{font-size:12px;color:var(--red);margin-top:5px;display:none}
+.form-group input.invalid,.form-group select.invalid,.form-group textarea.invalid{border-color:var(--red)}
 
 /* HOW IT WORKS */
 .steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;margin-top:48px}
@@ -108,6 +111,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .about-point{display:flex;gap:12px;align-items:flex-start}
 .ap-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px;flex-shrink:0}
 .ap-text{font-size:15px;color:var(--muted);line-height:1.6}
+.about-meta{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:14px;color:var(--muted);line-height:1.9}
+.about-meta strong{color:var(--text)}
 
 /* TOAST */
 #toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 20px;font-size:14px;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:320px}
@@ -119,6 +124,84 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .wa-float{position:fixed;bottom:28px;left:28px;z-index:90;background:#25d366;color:#fff;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 20px rgba(37,211,102,.4);text-decoration:none;transition:transform .2s}
 .wa-float:hover{transform:scale(1.1)}
+
+/* PROFESSIONAL REGISTER */
+#pageRegister{padding-top:64px}
+.reg-section{max-width:760px;margin:0 auto;padding:60px 5%}
+.reg-step-indicator{display:flex;gap:0;margin-bottom:40px;position:relative}
+.reg-step-indicator::before{content:'';position:absolute;top:18px;left:0;right:0;height:2px;background:var(--border);z-index:0}
+.reg-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;position:relative;z-index:1;cursor:default}
+.rs-num{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);transition:all .3s}
+.rs-label{font-size:11px;color:var(--muted);text-align:center;line-height:1.3;max-width:70px}
+.reg-step.active .rs-num{border-color:var(--accent);background:var(--accent);color:#fff}
+.reg-step.done .rs-num{border-color:var(--green);background:var(--green);color:#fff}
+.reg-step.active .rs-label,.reg-step.done .rs-label{color:var(--text)}
+.reg-panel{display:none}
+.reg-panel.active{display:block;animation:fadeIn .3s ease}
+.reg-panel-title{font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:6px}
+.reg-panel-sub{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.6}
+.checkbox-group{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.checkbox-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s}
+.checkbox-item:hover{border-color:var(--accent)}
+.checkbox-item input[type=checkbox],.checkbox-item input[type=radio]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.checkbox-item label{cursor:pointer;font-size:14px;flex:1}
+.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+@media(max-width:500px){.radio-group{grid-template-columns:1fr}}
+.radio-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .2s}
+.radio-card:hover{border-color:var(--accent)}
+.radio-card input[type=radio]{accent-color:var(--accent);width:16px;height:16px}
+.radio-card label{cursor:pointer;font-size:14px}
+.radio-card.selected{border-color:var(--accent);background:rgba(249,115,22,.07)}
+.photo-upload-area{border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.photo-upload-area:hover{border-color:var(--accent)}
+.photo-upload-area .upload-icon{font-size:36px;margin-bottom:10px}
+.photo-upload-area p{color:var(--muted);font-size:14px}
+.photo-upload-area small{color:var(--muted);font-size:12px;display:block;margin-top:4px}
+.photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.photo-preview{width:100px;height:120px;border-radius:10px;object-fit:cover;border:2px solid var(--accent);margin-top:12px}
+.sig-pad-wrap{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;position:relative;background:var(--card)}
+#sigCanvas{display:block;width:100%;height:160px;cursor:crosshair;touch-action:none}
+.sig-controls{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);justify-content:flex-end}
+.sig-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--muted);padding:6px 12px;font-size:12px;cursor:pointer}
+.sig-btn:hover{color:var(--text)}
+.declaration-box{background:rgba(249,115,22,.06);border:1.5px solid rgba(249,115,22,.25);border-radius:12px;padding:20px;margin-bottom:20px}
+.declaration-box p{font-size:14px;color:var(--muted);line-height:1.8}
+.declaration-box strong{color:var(--text)}
+.reg-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.progress-bar{background:var(--border);border-radius:999px;height:4px;margin-bottom:32px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s ease}
+
+/* PROFESSIONALS / REVIEWS on Home */
+#proSection{padding:80px 5%}
+.pro-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin-top:40px}
+.pro-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:24px;transition:all .25s}
+.pro-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 28px rgba(249,115,22,.12)}
+.pro-card-top{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.pro-avatar{width:56px;height:68px;border-radius:10px;object-fit:cover;background:var(--surface);border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--muted)}
+.pro-info .pro-name{font-family:var(--font-head);font-size:16px;font-weight:700}
+.pro-info .pro-prof{font-size:13px;color:var(--accent);margin-top:2px}
+.pro-info .pro-loc{font-size:12px;color:var(--muted);margin-top:3px}
+.star-row{display:flex;gap:3px;align-items:center;margin:10px 0 6px}
+.star{font-size:15px;color:#4a4a60}
+.star.filled{color:#f59e0b}
+.star.half{position:relative;color:#4a4a60}
+.star.half::after{content:'★';position:absolute;left:0;top:0;color:#f59e0b;width:50%;overflow:hidden;display:block}
+.review-count{font-size:12px;color:var(--muted);margin-left:4px}
+.pro-card .pro-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.1);color:var(--green);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600;margin-top:6px}
+.pro-tools{font-size:12px;color:var(--muted);margin-top:8px}
+.pro-card-actions{display:flex;gap:8px;margin-top:14px}
+.review-modal{max-width:540px}
+.rating-input{display:flex;gap:6px;margin:12px 0}
+.rating-star{font-size:28px;cursor:pointer;color:#4a4a60;transition:color .15s}
+.rating-star.active,.rating-star:hover,.rating-star.hover{color:#f59e0b}
+.reviews-list{display:flex;flex-direction:column;gap:12px;margin-top:16px;max-height:260px;overflow-y:auto}
+.review-item{background:var(--surface);border-radius:10px;padding:14px}
+.review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.reviewer-name{font-size:13px;font-weight:600}
+.review-text{font-size:13px;color:var(--muted);line-height:1.6}
+.review-date{font-size:11px;color:var(--muted)}
+.no-pros{text-align:center;padding:60px 20px;color:var(--muted)}
+.no-pros .emoji{font-size:48px;margin-bottom:16px}
 
 footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 5% 28px}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
@@ -137,12 +220,14 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
 <body>
 
 <nav id="mainNav">
-  <a class="nav-logo" href="#" onclick="showPage('home')">Banai<span>Dibo</span></a>
+  <a class="nav-logo" onclick="showPage('home')">Banai<span>Dibo</span></a>
   <div class="nav-links" id="navLinks">
     <a onclick="showPage('home');closeMenu()">Home</a>
     <a onclick="scrollToServices();closeMenu()">Services</a>
     <a onclick="scrollToHow();closeMenu()">How It Works</a>
     <a onclick="showPage('home');setTimeout(()=>scrollToAbout(),100);closeMenu()">About</a>
+    <a onclick="showPage('pros');closeMenu()">Find a Pro</a>
+    <a onclick="showPage('register');closeMenu()">Join as Pro</a>
     <a class="nav-cta" onclick="showPage('request');closeMenu()">Request Help</a>
   </div>
   <div class="hamburger" onclick="toggleMenu()">
@@ -158,10 +243,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
   <section class="hero">
     <div class="hero-glow"></div>
     <h1>Your Local <span>Fix</span>Everything<br/>Crew, On Demand</h1>
-    <p>Electricians, plumbers, painters, AC repair, carpenters, CCTV, mobile repair.</p>
+    <p>Electricians, plumbers, painters, AC repair, carpenters, CCTV, mobile repair — all in one place.</p>
     <div class="hero-btns">
       <button class="btn btn-primary" onclick="showPage('request')">🛠️ Request a Service</button>
-      <button class="btn btn-outline" onclick="scrollToServices()">Browse Services</button>
+      <button class="btn btn-outline" onclick="showPage('pros')">👷 Find a Pro</button>
+      <button class="btn btn-outline" onclick="showPage('register')">📝 Join as Professional</button>
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">7+</div><div class="stat-label">Service Types</div></div>
@@ -195,32 +281,31 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
     <div class="about-grid">
       <div>
         <div class="section-label">About BanaiDibo</div>
-         <h6>Establish:21/04/2026</h6><b>
-          <h6>Kohima,Nagaland</h6>
-          <h5>797001</h5>
-          <h6>Co-Founder: Kavi Chophi & Ashalo Kent</h6>
-          <h6>Contact: 8798099812</h6>
-           <h6>Email: banaidibo@gmail.com</h6>  
-        </b>
+        <div class="about-meta">
+          <strong>Established:</strong> 21 April 2026 &nbsp;·&nbsp; <strong>Location:</strong> Kohima, Nagaland – 797001<br/>
+          <strong>Co-Founders:</strong> Kavi Chophi &amp; Ashalo Kent<br/>
+          <strong>Contact:</strong> <a href="tel:8798099812" style="color:var(--accent);text-decoration:none">8798099812</a> &nbsp;·&nbsp;
+          <a href="mailto:banaidibo@gmail.com" style="color:var(--accent);text-decoration:none">banaidibo@gmail.com</a>
+        </div>
         <div class="section-title">Local Help,<br/>Done Right</div>
-        <p style="color:var(--muted);font-size:16px;line-height:1.7;margin:16px 0 24px">BanaiDibo is a platform that bridges local service professionals with the people who need them most — quickly, reliably, and with zero hassle.</p>
+        <p style="color:var(--muted);font-size:16px;line-height:1.7;margin:16px 0 24px">BanaiDibo bridges local service professionals with the people who need them most — quickly, reliably, and with zero hassle.</p>
         <div class="about-points">
           <div class="about-point"><div class="ap-dot"></div><div class="ap-text">Human-reviewed requests — a real mediator checks every submission</div></div>
           <div class="about-point"><div class="ap-dot"></div><div class="ap-text">No app download required — works on any phone or laptop browser</div></div>
-          <div class="about-point"><div class="ap-dot"></div><div class="ap-text">WhatsApp & phone follow-up so you always stay informed</div></div>
-          <div class="about-point"><div class="ap-dot"></div><div class="ap-text">Covering all common household & transport needs in one place</div></div>
+          <div class="about-point"><div class="ap-dot"></div><div class="ap-text">WhatsApp &amp; phone follow-up so you always stay informed</div></div>
+          <div class="about-point"><div class="ap-dot"></div><div class="ap-text">Covering all common household needs in one place</div></div>
         </div>
         <button class="btn btn-primary" style="margin-top:28px" onclick="showPage('request')">Get Started →</button>
       </div>
       <div class="about-visual">
         <div class="av-row"><div class="av-icon">⚡</div><div class="av-text"><strong>Electrician</strong>Wiring, switches, panels</div></div>
         <div class="av-row"><div class="av-icon">🔧</div><div class="av-text"><strong>Plumber</strong>Leaks, drainage, fittings</div></div>
-        <div class="av-row"><div class="av-icon">🎨</div><div class="av-text"><strong>House Painter</strong>Interior & exterior</div></div>
+        <div class="av-row"><div class="av-icon">🎨</div><div class="av-text"><strong>House Painter</strong>Interior &amp; exterior</div></div>
         <div class="av-row"><div class="av-icon">❄️</div><div class="av-text"><strong>AC Repair</strong>Service, gas, installation</div></div>
         <div class="av-row"><div class="av-icon">🪑</div><div class="av-text"><strong>Carpenter</strong>Furniture, doors, cabinets</div></div>
-        <div class="av-row"><div class="av-icon">📷</div><div class="av-text"><strong>CCTV Repair</strong>Installation & servicing</div></div>
+        <div class="av-row"><div class="av-icon">📷</div><div class="av-text"><strong>CCTV Repair</strong>Installation &amp; servicing</div></div>
         <div class="av-row"><div class="av-icon">📱</div><div class="av-text"><strong>Mobile Repair</strong>Screen, battery, software</div></div>
-        
+      </div>
     </div>
   </section>
 
@@ -234,8 +319,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
     <div class="footer-grid">
       <div><div class="footer-brand">Banai<span>Dibo</span></div><div class="footer-tagline">Local service connections, made simple.</div></div>
       <div class="footer-col"><h4>Services</h4><a onclick="showPage('request')">Electrician</a><a onclick="showPage('request')">Plumber</a><a onclick="showPage('request')">AC Repair</a><a onclick="showPage('request')">Carpenter</a></div>
-      <div class="footer-col"><h4>More</h4><a onclick="showPage('request')">House Painting</a><a onclick="showPage('request')">CCTV Repair</a><a onclick="showPage('request')">Mobile Repair</a>
-      <div class="footer-col"><h4>Company</h4><a onclick="scrollToAbout()">About</a><a onclick="showPage('request')">Request Help</a><a href="/admin.html">Admin Login</a><a href="https://wa.me/+918798099812" target="_blank">WhatsApp Us</a></div>
+      <div class="footer-col"><h4>More</h4><a onclick="showPage('request')">House Painting</a><a onclick="showPage('request')">CCTV Repair</a><a onclick="showPage('request')">Mobile Repair</a></div>
+      <div class="footer-col"><h4>Company</h4><a onclick="scrollToAbout()">About</a><a onclick="showPage('request')">Request Help</a><a onclick="showPage('register')">Join as Pro</a><a onclick="showPage('pros')">Find a Pro</a><a href="/admin.html">Admin Login</a><a href="https://wa.me/+918798099812" target="_blank">WhatsApp Us</a></div>
     </div>
     <div class="footer-bottom"><div>© 2026 BanaiDibo · banaidibo.in</div><div>Built with ❤️ for local communities</div></div>
   </footer>
@@ -245,7 +330,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
 <div id="pageRequest" class="page hidden">
   <div style="padding-top:64px">
     <div class="form-section">
-      <div class="section-label">Quick & Easy</div>
+      <div class="section-label">Quick &amp; Easy</div>
       <div class="form-title">Request a Service</div>
       <div class="form-sub">Fill in your details and describe your issue. We'll connect you with the right professional.</div>
 
@@ -269,20 +354,329 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
             <option value="Carpenter">🪑 Carpenter</option>
             <option value="CCTV Repair">📷 CCTV Repair</option>
             <option value="Mobile Repair">📱 Mobile Repair</option>
-            
+          </select>
+          <div class="field-error" id="err_service">Please select a service.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="f_name" placeholder="e.g. Arun Kumar" oninput="clearError('f_name','err_name')"/>
+            <div class="field-error" id="err_name">Please enter your full name (min 3 characters).</div>
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="f_phone" placeholder="e.g. 9876543210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'');clearError('f_phone','err_phone')"/>
+            <div class="field-error" id="err_phone">Enter a valid 10-digit Indian phone number.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Location / Address *</label>
+          <input type="text" id="f_location" placeholder="e.g. Ward 5, Kohima, Nagaland" oninput="clearError('f_location','err_location')"/>
+          <div class="field-error" id="err_location">Please enter your location.</div>
+        </div>
+
+        <!-- Preferred Date — shown for all services -->
+        <div class="form-group" id="dateGroup" style="display:none">
+          <label>Preferred Date <span style="color:var(--muted);font-size:12px">(optional)</span></label>
+          <input type="date" id="f_date"/>
+          <div class="date-note">📅 We'll try to schedule on or near this date.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Describe Your Issue / Need *</label>
+          <textarea id="f_issue" placeholder="Briefly describe the problem or what you need help with..." oninput="clearError('f_issue','err_issue')"></textarea>
+          <div class="field-error" id="err_issue">Please describe the issue (min 10 characters).</div>
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp Number <span style="color:var(--muted);font-size:12px">(if different from phone)</span></label>
+          <input type="tel" id="f_whatsapp" placeholder="Optional — for WhatsApp updates" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/>
+        </div>
+
+        <button class="btn btn-primary submit-btn" id="submitBtn" onclick="submitRequest()">Submit Request 🚀</button>
+        <p style="font-size:13px;color:var(--muted);margin-top:12px;text-align:center">We typically respond within a few hours via WhatsApp or call.</p>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-bottom" style="border-top:1px solid var(--border);padding-top:24px">
+      <div>© 2026 BanaiDibo</div>
+      <a onclick="showPage('home')" style="cursor:pointer;color:var(--accent)">← Back to Home</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ FIND A PRO PAGE ═══ -->
+<div id="pagePros" class="page hidden">
+  <div style="padding-top:64px">
+    <div style="max-width:1100px;margin:0 auto;padding:60px 5% 40px">
+      <div class="section-label">Verified Professionals</div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:12px">
+        <div class="section-title" style="margin-bottom:0">Find a Pro Near You</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <select id="proFilterProfession" onchange="renderPros()" style="background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none">
+            <option value="">All Professions</option>
+            <option>Electrician</option><option>Plumber</option><option>House Painter</option>
+            <option>Carpenter</option><option>AC Service Expert</option><option>CCTV Technician</option>
+            <option>Mobile Repair Technician</option>
+          </select>
+          <input id="proSearch" oninput="renderPros()" placeholder="🔍 Search name or location…" style="background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;width:220px"/>
+        </div>
+      </div>
+      <div class="section-sub" style="margin-bottom:40px">Browse professionals who've registered with BanaiDibo. After they complete work, customers can rate and review them.</div>
+      <div id="proCardsWrap" class="pro-cards"><div class="no-pros"><div class="emoji">⏳</div><div>Loading professionals…</div></div></div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-bottom" style="border-top:1px solid var(--border);padding-top:24px">
+      <div>© 2026 BanaiDibo</div>
+      <div style="display:flex;gap:16px">
+        <a onclick="showPage('register')" style="cursor:pointer;color:var(--accent)">Join as Professional</a>
+        <a onclick="showPage('home')" style="cursor:pointer;color:var(--muted)">← Home</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ REVIEW MODAL ═══ -->
+<div class="modal-overlay hidden" id="reviewModal" onclick="if(event.target===this)closeReviewModal()">
+  <div class="modal review-modal">
+    <button class="modal-close" onclick="closeReviewModal()">✕</button>
+    <h3 id="reviewModalTitle">⭐ Reviews</h3>
+    <div id="reviewModalContent"></div>
+  </div>
+</div>
+
+<!-- ═══ REGISTER AS PRO PAGE ═══ -->
+<div id="pageRegister" class="page hidden">
+  <div class="reg-section">
+    <div class="section-label">For Professionals</div>
+    <div style="font-family:var(--font-head);font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:8px">Register as a Professional</div>
+    <div style="color:var(--muted);margin-bottom:32px;line-height:1.6;font-size:15px">Fill in your details below. Once verified by BanaiDibo, customers will be able to find and contact you directly.</div>
+
+    <div id="regSuccess" class="success-banner hidden">
+      <div class="success-icon">🎉</div>
+      <div>
+        <h4>Registration Submitted!</h4>
+        <p>Your application has been received. Our team will review and verify your details shortly. You'll be contacted via WhatsApp once approved.</p>
+      </div>
+    </div>
+
+    <div id="regFormWrap">
+      <div class="progress-bar"><div class="progress-fill" id="regProgress" style="width:20%"></div></div>
+
+      <div class="reg-step-indicator" id="regStepIndicator">
+        <div class="reg-step active" id="si-1"><div class="rs-num">1</div><div class="rs-label">Personal Info</div></div>
+        <div class="reg-step" id="si-2"><div class="rs-num">2</div><div class="rs-label">ID Proof</div></div>
+        <div class="reg-step" id="si-3"><div class="rs-num">3</div><div class="rs-label">Profession</div></div>
+        <div class="reg-step" id="si-4"><div class="rs-num">4</div><div class="rs-label">Availability</div></div>
+        <div class="reg-step" id="si-5"><div class="rs-num">5</div><div class="rs-label">Declaration</div></div>
+      </div>
+
+      <!-- STEP 1: Personal Info -->
+      <div class="reg-panel active" id="rp-1">
+        <div class="reg-panel-title">👤 Personal Information</div>
+        <div class="reg-panel-sub">Let's start with your basic contact details.</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="r_name" placeholder="As per ID proof" oninput="clearError('r_name','re_name')"/>
+            <div class="field-error" id="re_name">Please enter your full name (min 3 chars).</div>
+          </div>
+          <div class="form-group">
+            <label>Phone / WhatsApp Number *</label>
+            <input type="tel" id="r_phone" placeholder="10-digit number" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'');clearError('r_phone','re_phone')"/>
+            <div class="field-error" id="re_phone">Enter a valid 10-digit Indian number.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Residential Address *</label>
+          <textarea id="r_address" style="min-height:80px" placeholder="House/Door No., Street, Ward, Town, District, State, PIN" oninput="clearError('r_address','re_address')"></textarea>
+          <div class="field-error" id="re_address">Please enter your full address.</div>
+        </div>
+
+        <div class="reg-nav">
+          <span></span>
+          <button class="btn btn-primary" onclick="regNext(1)">Next → ID Proof</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: ID Proof -->
+      <div class="reg-panel" id="rp-2">
+        <div class="reg-panel-title">🪪 Identity Proof</div>
+        <div class="reg-panel-sub">Select the type of ID you'll provide. You'll submit the physical document when our team meets you for verification.</div>
+
+        <div class="form-group">
+          <label>ID Proof Type *</label>
+          <div class="checkbox-group" id="idProofGroup">
+            <div class="checkbox-item"><input type="radio" name="idProof" value="Aadhaar Card" id="id1" onchange="clearError('idProofGroup','re_id')"/><label for="id1">🪪 Aadhaar Card</label></div>
+            <div class="checkbox-item"><input type="radio" name="idProof" value="PAN Card" id="id2" onchange="clearError('idProofGroup','re_id')"/><label for="id2">💳 PAN Card</label></div>
+            <div class="checkbox-item"><input type="radio" name="idProof" value="Voter ID" id="id3" onchange="clearError('idProofGroup','re_id')"/><label for="id3">🗳️ Voter ID Card</label></div>
+            <div class="checkbox-item"><input type="radio" name="idProof" value="Driving Licence" id="id4" onchange="clearError('idProofGroup','re_id')"/><label for="id4">🚗 Driving Licence</label></div>
+            <div class="checkbox-item"><input type="radio" name="idProof" value="Passport" id="id5" onchange="clearError('idProofGroup','re_id')"/><label for="id5">📘 Passport</label></div>
+            <div class="checkbox-item"><input type="radio" name="idProof" value="Government ID" id="id6" onchange="clearError('idProofGroup','re_id')"/><label for="id6">🏛️ Any Other Government-Issued ID</label></div>
+          </div>
+          <div class="field-error" id="re_id">Please select an ID proof type.</div>
+        </div>
+
+        <div class="form-group">
+          <label>ID Number <span style="color:var(--muted);font-size:12px">(optional — for reference)</span></label>
+          <input type="text" id="r_idnum" placeholder="e.g. XXXX-XXXX-XXXX (last 4 digits only for Aadhaar)" style="letter-spacing:1px"/>
+        </div>
+
+        <div class="reg-nav">
+          <button class="btn btn-outline" onclick="regBack(2)">← Back</button>
+          <button class="btn btn-primary" onclick="regNext(2)">Next → Profession</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Profession -->
+      <div class="reg-panel" id="rp-3">
+        <div class="reg-panel-title">🛠️ Your Profession</div>
+        <div class="reg-panel-sub">Tell us what you do and how much experience you have.</div>
+
+        <div class="form-group">
+          <label>Profession *</label>
+          <select id="r_profession" onchange="clearError('r_profession','re_profession')">
+            <option value="">— Select your profession —</option>
+            <option>Electrician</option>
+            <option>Plumber</option>
+            <option>House Painter</option>
+            <option>Carpenter</option>
+            <option>AC Service Expert</option>
+            <option>CCTV Technician</option>
+            <option>Mobile Repair Technician</option>
+          </select>
+          <div class="field-error" id="re_profession">Please select your profession.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Years of Experience <span style="color:var(--muted);font-size:12px">(optional)</span></label>
+          <select id="r_experience">
+            <option value="">— Prefer not to say / New to the field —</option>
+            <option value="Less than 1 year">Less than 1 year</option>
+            <option value="1–2 years">1–2 years</option>
+            <option value="3–5 years">3–5 years</option>
+            <option value="6–10 years">6–10 years</option>
+            <option value="More than 10 years">More than 10 years</option>
           </select>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Full Name *</label><input type="text" id="f_name" placeholder="e.g. Arun Kumar"/></div>
-          <div class="form-group"><label>Phone Number *</label><input type="tel" id="f_phone" placeholder="e.g. 9876543210"/></div>
+
+        <div class="form-group">
+          <label>Brief Description of Your Work <span style="color:var(--muted);font-size:12px">(optional)</span></label>
+          <textarea id="r_bio" style="min-height:90px" placeholder="e.g. I specialise in residential wiring and solar panel installation. Available for both emergency and planned work."></textarea>
         </div>
-        <div class="form-group"><label>Your Location / Address *</label><input type="text" id="f_location" placeholder="e.g. Ward 5, Dimapur, Nagaland"/></div>
-        <div class="form-group" id="dateGroup" style="display:none">
+
+        <div class="reg-nav">
+          <button class="btn btn-outline" onclick="regBack(3)">← Back</button>
+          <button class="btn btn-primary" onclick="regNext(3)">Next → Availability</button>
         </div>
-        <div class="form-group"><label>Describe Your Issue / Need *</label><textarea id="f_issue" placeholder="Briefly describe the problem or what you need help with..."></textarea></div>
-        <div class="form-group"><label>WhatsApp Number <span style="color:var(--muted);font-size:12px">(if different from phone)</span></label><input type="tel" id="f_whatsapp" placeholder="Optional — for WhatsApp updates"/></div>
-        <button class="btn btn-primary submit-btn" onclick="submitRequest()">Submit Request 🚀</button>
-        <p style="font-size:13px;color:var(--muted);margin-top:12px;text-align:center">We typically respond within a few hours via WhatsApp or call.</p>
+      </div>
+
+      <!-- STEP 4: Availability & Tools -->
+      <div class="reg-panel" id="rp-4">
+        <div class="reg-panel-title">📅 Availability & Tools</div>
+        <div class="reg-panel-sub">Let customers know when you're available and whether you bring your own tools.</div>
+
+        <div class="form-group">
+          <label>Service Readiness *</label>
+          <div class="radio-group" id="readinessGroup">
+            <div class="radio-card" id="rc_immediate" onclick="pickReadiness('Immediate – Available now')">
+              <input type="radio" name="readiness" value="Immediate – Available now"/>
+              <label>⚡ Immediate<br/><span style="color:var(--muted);font-size:12px">Available now</span></label>
+            </div>
+            <div class="radio-card" id="rc_scheduled" onclick="pickReadiness('Scheduled – Pre-booking preferred')">
+              <input type="radio" name="readiness" value="Scheduled – Pre-booking preferred"/>
+              <label>📅 Scheduled<br/><span style="color:var(--muted);font-size:12px">Pre-booking preferred</span></label>
+            </div>
+            <div class="radio-card" id="rc_weekdays" onclick="pickReadiness('Weekdays only')">
+              <input type="radio" name="readiness" value="Weekdays only"/>
+              <label>📆 Weekdays Only<br/><span style="color:var(--muted);font-size:12px">Mon–Sat</span></label>
+            </div>
+            <div class="radio-card" id="rc_flexible" onclick="pickReadiness('Flexible – Any time')">
+              <input type="radio" name="readiness" value="Flexible – Any time"/>
+              <label>🕐 Flexible<br/><span style="color:var(--muted);font-size:12px">Any time</span></label>
+            </div>
+          </div>
+          <div class="field-error" id="re_readiness">Please select your service readiness.</div>
+        </div>
+
+        <div class="form-group" style="margin-top:8px">
+          <label>Do you have your own tools / equipment? *</label>
+          <div class="radio-group" id="toolsGroup">
+            <div class="radio-card" id="rc_tools_yes" onclick="pickTools('Yes')">
+              <input type="radio" name="ownTools" value="Yes"/>
+              <label>✅ Yes — I bring my own tools</label>
+            </div>
+            <div class="radio-card" id="rc_tools_no" onclick="pickTools('No')">
+              <input type="radio" name="ownTools" value="No"/>
+              <label>🚫 No — Customer provides tools</label>
+            </div>
+          </div>
+          <div class="field-error" id="re_tools">Please indicate whether you have tools.</div>
+        </div>
+
+        <div class="reg-nav">
+          <button class="btn btn-outline" onclick="regBack(4)">← Back</button>
+          <button class="btn btn-primary" onclick="regNext(4)">Next → Declaration</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Photo, Signature & Declaration -->
+      <div class="reg-panel" id="rp-5">
+        <div class="reg-panel-title">✍️ Verification & Declaration</div>
+        <div class="reg-panel-sub">Upload your passport photo, draw your signature, and declare the information is accurate.</div>
+
+        <div class="form-group">
+          <label>Passport Photo *</label>
+          <div class="photo-upload-area" id="photoArea" onclick="document.getElementById('r_photo').click()">
+            <input type="file" id="r_photo" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handlePhotoUpload(event)"/>
+            <div id="photoPlaceholder">
+              <div class="upload-icon">📷</div>
+              <p>Click to upload your passport-size photo</p>
+              <small>JPG or PNG • Max 2MB • Clear face visible</small>
+            </div>
+            <img id="photoPreview" class="photo-preview hidden" alt="Preview"/>
+          </div>
+          <div class="field-error" id="re_photo">Please upload your passport photo.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Signature *</label>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Draw your signature below using mouse or finger</p>
+          <div class="sig-pad-wrap">
+            <canvas id="sigCanvas" width="700" height="160"></canvas>
+            <div class="sig-controls">
+              <button class="sig-btn" onclick="clearSig()">🗑️ Clear</button>
+            </div>
+          </div>
+          <div class="field-error" id="re_sig">Please draw your signature above.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Date of Filling *</label>
+          <input type="date" id="r_date" oninput="clearError('r_date','re_date')"/>
+          <div class="field-error" id="re_date">Please select today's date.</div>
+        </div>
+
+        <div class="declaration-box">
+          <p>I, <strong id="declName">[Your Name]</strong>, hereby declare that all information provided in this registration form is <strong>true, accurate, and complete</strong> to the best of my knowledge. I understand that any false information may result in immediate removal from the BanaiDibo platform. I consent to BanaiDibo displaying my professional profile to customers seeking services in my area. I agree to maintain professional conduct in all service interactions.</p>
+        </div>
+
+        <div class="checkbox-item" style="margin-bottom:20px">
+          <input type="checkbox" id="r_agree" onchange="clearError('r_agree','re_agree')"/>
+          <label for="r_agree">I have read and agree to the above declaration ✅</label>
+        </div>
+        <div class="field-error" id="re_agree">You must agree to the declaration to proceed.</div>
+
+        <div class="reg-nav">
+          <button class="btn btn-outline" onclick="regBack(5)">← Back</button>
+          <button class="btn btn-primary" id="regSubmitBtn" onclick="submitRegistration()">Submit Registration 🎉</button>
+        </div>
       </div>
     </div>
   </div>
@@ -327,19 +721,48 @@ function pickService(name){
 }
 
 function showPage(p){
-  document.getElementById('pageHome').classList.toggle('hidden',p!=='home');
-  document.getElementById('pageRequest').classList.toggle('hidden',p!=='request');
+  ['home','request','register','pros'].forEach(pg=>{
+    document.getElementById('page'+pg.charAt(0).toUpperCase()+pg.slice(1)).classList.toggle('hidden',p!==pg);
+  });
   window.scrollTo(0,0);
+  if(p==='pros') loadPros();
+  if(p==='register'){
+    const today=new Date().toISOString().split('T')[0];
+    document.getElementById('r_date').value=today;
+    document.getElementById('r_date').max=today;
+    initSigPad();
+  }
 }
+
+// ── Show preferred date field for all services ──
 function handleServiceChange(){
-  // you can leave it empty for now
+  const val = document.getElementById('f_service').value;
+  document.getElementById('dateGroup').style.display = val ? 'block' : 'none';
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f_date').min = today;
+  clearError('f_service','err_service');
 }
+
 function toggleMenu(){ document.getElementById('navLinks').classList.toggle('open'); }
 function closeMenu(){ document.getElementById('navLinks').classList.remove('open'); }
 function scrollToServices(){ showPage('home'); setTimeout(()=>document.getElementById('servicesSection').scrollIntoView({behavior:'smooth'}),100); }
 function scrollToHow(){ showPage('home'); setTimeout(()=>document.getElementById('howSection').scrollIntoView({behavior:'smooth'}),100); }
 function scrollToAbout(){ document.getElementById('aboutSection').scrollIntoView({behavior:'smooth'}); }
 
+// ── Inline validation helpers ──
+function clearError(fieldId, errId){
+  document.getElementById(fieldId).classList.remove('invalid');
+  document.getElementById(errId).style.display='none';
+}
+function showError(fieldId, errId){
+  document.getElementById(fieldId).classList.add('invalid');
+  document.getElementById(errId).style.display='block';
+}
+
+function validatePhone(phone){
+  return /^[6-9]\d{9}$/.test(phone); // Valid Indian mobile: starts with 6-9, 10 digits
+}
 
 async function submitRequest(){
   const service=document.getElementById('f_service').value.trim();
@@ -348,21 +771,26 @@ async function submitRequest(){
   const location=document.getElementById('f_location').value.trim();
   const issue=document.getElementById('f_issue').value.trim();
   const whatsapp=document.getElementById('f_whatsapp').value.trim();
+  const date=document.getElementById('f_date').value||null;
 
-  if(!service||!name||!phone||!location||!issue){ showToast('❗ Please fill in all required fields.','error'); return; }
-  if(name.length<3){ showToast('Name too short.','error'); return; }
-  if(issue.length<10){ showToast('Please describe the issue in more detail.','error'); return; }
-  if(!confirm('Submit this request?')) return;
+  // ── Validate ──
+  let valid=true;
+  if(!service){ showError('f_service','err_service'); valid=false; }
+  if(name.length<3){ showError('f_name','err_name'); valid=false; }
+  if(!validatePhone(phone)){ showError('f_phone','err_phone'); valid=false; }
+  if(!location){ showError('f_location','err_location'); valid=false; }
+  if(issue.length<10){ showError('f_issue','err_issue'); valid=false; }
+  if(!valid){ showToast('❗ Please fix the errors above.','error'); return; }
 
-  const btn=document.querySelector('.submit-btn');
+  const btn=document.getElementById('submitBtn');
   btn.disabled=true;
-  btn.textContent='Submitting...';
+  btn.textContent='Submitting…';
 
   try {
     const res = await fetch('/.netlify/functions/requests', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({service,name,phone,location,issue,whatsapp:whatsapp||null})
+      body:JSON.stringify({service,name,phone,location,issue,whatsapp:whatsapp||null,preferredDate:date})
     });
     const data = await res.json();
     if(!res.ok) throw new Error(data.error||'Failed');
@@ -374,7 +802,10 @@ async function submitRequest(){
     setTimeout(()=>{
       document.getElementById('requestFormWrap').style.display='block';
       document.getElementById('formSuccess').classList.add('hidden');
-      ['f_service','f_name','f_phone','f_location','f_issue','f_date','f_whatsapp'].forEach(id=>{ document.getElementById(id).value=''; });
+      ['f_service','f_name','f_phone','f_location','f_issue','f_date','f_whatsapp'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.value='';
+      });
       document.getElementById('dateGroup').style.display='none';
       btn.disabled=false;
       btn.textContent='Submit Request 🚀';
@@ -394,6 +825,338 @@ function showToast(msg,type='success'){
 }
 
 buildServicesGrid();
+
+// ══════════════════════════════
+//  REGISTRATION WIZARD
+// ══════════════════════════════
+let currentStep = 1;
+const TOTAL_STEPS = 5;
+let photoDataUrl = null;
+let sigCanvas, sigCtx, sigDrawing = false, sigHasContent = false;
+
+function updateStepUI(step) {
+  for(let i=1;i<=TOTAL_STEPS;i++){
+    const el = document.getElementById(`si-${i}`);
+    const panel = document.getElementById(`rp-${i}`);
+    el.classList.remove('active','done');
+    panel.classList.remove('active');
+    if(i<step) el.classList.add('done');
+    if(i===step){ el.classList.add('active'); panel.classList.add('active'); }
+  }
+  document.getElementById('regProgress').style.width = ((step/TOTAL_STEPS)*100)+'%';
+  // Update declaration name
+  const n = document.getElementById('r_name').value.trim();
+  document.getElementById('declName').textContent = n || '[Your Name]';
+  currentStep = step;
+}
+
+function regNext(step) {
+  if(!validateRegStep(step)) return;
+  updateStepUI(step+1);
+  window.scrollTo(0,0);
+}
+
+function regBack(step) {
+  updateStepUI(step-1);
+  window.scrollTo(0,0);
+}
+
+function validateRegStep(step) {
+  let ok = true;
+  if(step===1){
+    const name=document.getElementById('r_name').value.trim();
+    const phone=document.getElementById('r_phone').value.trim();
+    const addr=document.getElementById('r_address').value.trim();
+    if(name.length<3){ showError('r_name','re_name'); ok=false; }
+    if(!/^[6-9]\d{9}$/.test(phone)){ showError('r_phone','re_phone'); ok=false; }
+    if(addr.length<5){ showError('r_address','re_address'); ok=false; }
+  }
+  if(step===2){
+    const id=document.querySelector('input[name="idProof"]:checked');
+    if(!id){ document.getElementById('re_id').style.display='block'; ok=false; }
+  }
+  if(step===3){
+    const prof=document.getElementById('r_profession').value;
+    if(!prof){ showError('r_profession','re_profession'); ok=false; }
+  }
+  if(step===4){
+    const r=document.querySelector('input[name="readiness"]:checked');
+    const t=document.querySelector('input[name="ownTools"]:checked');
+    if(!r){ document.getElementById('re_readiness').style.display='block'; ok=false; }
+    if(!t){ document.getElementById('re_tools').style.display='block'; ok=false; }
+  }
+  if(!ok) showToast('❗ Please complete all required fields.','error');
+  return ok;
+}
+
+function pickReadiness(val){
+  document.querySelectorAll('.radio-card[id^="rc_"]').forEach(c=>{
+    if(['rc_immediate','rc_scheduled','rc_weekdays','rc_flexible'].includes(c.id)) c.classList.remove('selected');
+  });
+  const map={'Immediate – Available now':'rc_immediate','Scheduled – Pre-booking preferred':'rc_scheduled','Weekdays only':'rc_weekdays','Flexible – Any time':'rc_flexible'};
+  const cardId = map[val];
+  if(cardId) document.getElementById(cardId).classList.add('selected');
+  document.querySelector(`input[name="readiness"][value="${val}"]`).checked=true;
+  document.getElementById('re_readiness').style.display='none';
+}
+
+function pickTools(val){
+  document.getElementById('rc_tools_yes').classList.toggle('selected',val==='Yes');
+  document.getElementById('rc_tools_no').classList.toggle('selected',val==='No');
+  document.querySelector(`input[name="ownTools"][value="${val}"]`).checked=true;
+  document.getElementById('re_tools').style.display='none';
+}
+
+function handlePhotoUpload(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  if(file.size>2*1024*1024){ showToast('❌ Photo must be under 2MB','error'); return; }
+  const reader=new FileReader();
+  reader.onload=(ev)=>{
+    photoDataUrl=ev.target.result;
+    document.getElementById('photoPlaceholder').style.display='none';
+    const img=document.getElementById('photoPreview');
+    img.src=photoDataUrl;
+    img.classList.remove('hidden');
+    document.getElementById('re_photo').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+let sigInited = false;
+function initSigPad(){
+  if(sigInited) return;
+  sigInited=true;
+  sigCanvas=document.getElementById('sigCanvas');
+  sigCtx=sigCanvas.getContext('2d');
+  // Resize canvas to actual display size
+  const resize=()=>{
+    const w=sigCanvas.offsetWidth;
+    sigCanvas.width=w; sigCanvas.height=160;
+    sigCtx.strokeStyle='#f1f5f9';
+    sigCtx.lineWidth=2.5;
+    sigCtx.lineCap='round';
+  };
+  resize();
+
+  const getPos=(e)=>{
+    const r=sigCanvas.getBoundingClientRect();
+    const src=e.touches?e.touches[0]:e;
+    return{x:src.clientX-r.left,y:src.clientY-r.top};
+  };
+  sigCanvas.addEventListener('mousedown',e=>{sigDrawing=true;const p=getPos(e);sigCtx.beginPath();sigCtx.moveTo(p.x,p.y);});
+  sigCanvas.addEventListener('mousemove',e=>{if(!sigDrawing)return;const p=getPos(e);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();sigHasContent=true;});
+  sigCanvas.addEventListener('mouseup',()=>{sigDrawing=false;});
+  sigCanvas.addEventListener('touchstart',e=>{e.preventDefault();sigDrawing=true;const p=getPos(e);sigCtx.beginPath();sigCtx.moveTo(p.x,p.y);},{passive:false});
+  sigCanvas.addEventListener('touchmove',e=>{e.preventDefault();if(!sigDrawing)return;const p=getPos(e);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();sigHasContent=true;},{passive:false});
+  sigCanvas.addEventListener('touchend',()=>{sigDrawing=false;});
+}
+
+function clearSig(){
+  if(!sigCtx) return;
+  sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+  sigHasContent=false;
+}
+
+async function submitRegistration(){
+  // Validate step 5
+  if(!photoDataUrl){ document.getElementById('re_photo').style.display='block'; showToast('❗ Please upload your passport photo.','error'); return; }
+  if(!sigHasContent){ document.getElementById('re_sig').style.display='block'; showToast('❗ Please draw your signature.','error'); return; }
+  const date=document.getElementById('r_date').value;
+  if(!date){ showError('r_date','re_date'); showToast('❗ Please select the date.','error'); return; }
+  if(!document.getElementById('r_agree').checked){ document.getElementById('re_agree').style.display='block'; showToast('❗ Please agree to the declaration.','error'); return; }
+
+  const btn=document.getElementById('regSubmitBtn');
+  btn.disabled=true; btn.textContent='Submitting…';
+
+  const payload={
+    name: document.getElementById('r_name').value.trim(),
+    phone: document.getElementById('r_phone').value.trim(),
+    address: document.getElementById('r_address').value.trim(),
+    idProof: document.querySelector('input[name="idProof"]:checked')?.value||'',
+    idNumber: document.getElementById('r_idnum').value.trim()||null,
+    profession: document.getElementById('r_profession').value,
+    experience: document.getElementById('r_experience').value||null,
+    bio: document.getElementById('r_bio').value.trim()||null,
+    readiness: document.querySelector('input[name="readiness"]:checked')?.value||'',
+    ownTools: document.querySelector('input[name="ownTools"]:checked')?.value||'',
+    photoUrl: photoDataUrl,
+    signatureUrl: sigCanvas.toDataURL(),
+    filledDate: date,
+  };
+
+  try{
+    const res=await fetch('/.netlify/functions/professionals',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||'Failed');
+    document.getElementById('regFormWrap').style.display='none';
+    document.getElementById('regSuccess').classList.remove('hidden');
+    showToast('🎉 Registration submitted!','success');
+  }catch(err){
+    showToast('❌ Failed to submit. Please try again.','error');
+    btn.disabled=false; btn.textContent='Submit Registration 🎉';
+  }
+}
+
+// ══════════════════════════════
+//  PROFESSIONALS LISTING
+// ══════════════════════════════
+let allPros = [];
+
+async function loadPros(){
+  document.getElementById('proCardsWrap').innerHTML='<div class="no-pros"><div class="emoji">⏳</div><div>Loading…</div></div>';
+  try{
+    const res=await fetch('/.netlify/functions/professionals');
+    const data=await res.json();
+    allPros=Array.isArray(data)?data:[];
+    renderPros();
+  }catch{
+    document.getElementById('proCardsWrap').innerHTML='<div class="no-pros"><div class="emoji">⚠️</div><div>Could not load professionals. Please try again.</div></div>';
+  }
+}
+
+function renderPros(){
+  const q=(document.getElementById('proSearch').value||'').toLowerCase();
+  const pf=document.getElementById('proFilterProfession').value;
+  let list=[...allPros].filter(p=>p.status==='approved');
+  if(pf) list=list.filter(p=>p.profession===pf);
+  if(q) list=list.filter(p=>(p.name+p.profession+p.address).toLowerCase().includes(q));
+
+  const wrap=document.getElementById('proCardsWrap');
+  if(!list.length){
+    wrap.innerHTML='<div class="no-pros" style="grid-column:1/-1"><div class="emoji">🔍</div><div>No professionals found. Try a different filter.</div></div>';
+    return;
+  }
+
+  wrap.innerHTML=list.map(p=>{
+    const avg=p.reviews&&p.reviews.length? (p.reviews.reduce((s,r)=>s+r.rating,0)/p.reviews.length).toFixed(1) : null;
+    const stars=avg?renderStars(parseFloat(avg)):'<span style="color:var(--muted);font-size:12px">No reviews yet</span>';
+    const avatar=p.photoUrl?`<img src="${p.photoUrl}" class="pro-avatar" alt="${escH(p.name)}" style="width:56px;height:68px;border-radius:10px;object-fit:cover;border:2px solid var(--border)"/>`:`<div class="pro-avatar">${profIcon(p.profession)}</div>`;
+    return`<div class="pro-card">
+      <div class="pro-card-top">
+        ${avatar}
+        <div class="pro-info">
+          <div class="pro-name">${escH(p.name)}</div>
+          <div class="pro-prof">${profIcon(p.profession)} ${escH(p.profession)}</div>
+          <div class="pro-loc">📍 ${escH((p.address||'').split(',').slice(-2).join(', '))}</div>
+        </div>
+      </div>
+      <div class="star-row">${stars}${avg?`<span class="review-count">${avg} (${p.reviews.length} review${p.reviews.length!==1?'s':''})</span>`:''}</div>
+      ${p.experience?`<div style="font-size:12px;color:var(--muted);margin-bottom:4px">⏳ ${escH(p.experience)}</div>`:''}
+      ${p.ownTools==='Yes'?`<div class="pro-tools">🧰 Brings own tools</div>`:''}
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">🕐 ${escH(p.readiness||'')}</div>
+      <div class="pro-card-actions">
+        <a href="https://wa.me/91${p.phone}" target="_blank" class="btn btn-primary btn-sm" style="padding:7px 14px;font-size:13px;text-decoration:none">💬 WhatsApp</a>
+        <button class="btn btn-outline btn-sm" onclick="openReviewModal('${p.id}')">⭐ Reviews</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStars(avg){
+  let html='';
+  for(let i=1;i<=5;i++){
+    if(avg>=i) html+=`<span class="star filled">★</span>`;
+    else if(avg>=i-0.5) html+=`<span class="star half">★</span>`;
+    else html+=`<span class="star">★</span>`;
+  }
+  return html;
+}
+
+function profIcon(p){
+  return{'Electrician':'⚡','Plumber':'🔧','House Painter':'🎨','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱'}[p]||'🔩';
+}
+
+// ══════════════════════════════
+//  REVIEW MODAL
+// ══════════════════════════════
+let reviewingProId = null;
+let hoverRating = 0;
+
+function openReviewModal(proId){
+  reviewingProId = proId;
+  const pro = allPros.find(p=>p.id===proId);
+  if(!pro) return;
+  document.getElementById('reviewModalTitle').textContent=`⭐ Reviews — ${pro.name}`;
+
+  const avg=pro.reviews&&pro.reviews.length?(pro.reviews.reduce((s,r)=>s+r.rating,0)/pro.reviews.length).toFixed(1):null;
+
+  document.getElementById('reviewModalContent').innerHTML=`
+    ${avg?`<div style="text-align:center;padding:12px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px">
+      <div style="font-family:var(--font-head);font-size:42px;font-weight:800;color:var(--accent)">${avg}</div>
+      <div style="display:flex;justify-content:center;gap:4px;margin:6px 0">${renderStars(parseFloat(avg))}</div>
+      <div style="color:var(--muted);font-size:13px">${pro.reviews.length} review${pro.reviews.length!==1?'s':''}</div>
+    </div>`:''}
+    <div style="margin-bottom:20px">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">Leave a Review</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Your name</div>
+      <input type="text" id="rv_reviewer" placeholder="Your name" style="width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;margin-bottom:10px" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Rating</div>
+      <div class="rating-input" id="ratingInput">
+        ${[1,2,3,4,5].map(i=>`<span class="rating-star" data-val="${i}" onmouseover="hoverStars(${i})" onmouseout="resetStars()" onclick="selectStar(${i})">★</span>`).join('')}
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Your feedback</div>
+      <textarea id="rv_text" placeholder="How was the experience? Was the work done well?" style="width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;resize:vertical;min-height:80px" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      <button class="btn btn-primary" style="margin-top:10px;width:100%" onclick="submitReview('${proId}')">Submit Review ⭐</button>
+    </div>
+    ${pro.reviews&&pro.reviews.length?`
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px">All Reviews</div>
+    <div class="reviews-list">
+      ${[...pro.reviews].reverse().map(r=>`
+        <div class="review-item">
+          <div class="review-header">
+            <span class="reviewer-name">${escH(r.reviewer)}</span>
+            <div style="display:flex;gap:2px">${[1,2,3,4,5].map(i=>`<span style="font-size:13px;color:${i<=r.rating?'#f59e0b':'#4a4a60'}">★</span>`).join('')}</div>
+          </div>
+          <div class="review-text">${escH(r.text)}</div>
+          <div class="review-date" style="margin-top:4px">${new Date(r.createdAt).toLocaleDateString('en-IN')}</div>
+        </div>
+      `).join('')}
+    </div>`:'<div style="text-align:center;color:var(--muted);padding:20px;font-size:14px">No reviews yet. Be the first!</div>'}
+  `;
+
+  hoverRating=0; selectedRating=0;
+  document.getElementById('reviewModal').classList.remove('hidden');
+}
+
+function closeReviewModal(){ document.getElementById('reviewModal').classList.add('hidden'); reviewingProId=null; }
+
+let selectedRating=0;
+function hoverStars(n){ document.querySelectorAll('.rating-star').forEach((s,i)=>s.classList.toggle('hover',i<n)); }
+function resetStars(){ document.querySelectorAll('.rating-star').forEach((s,i)=>{ s.classList.remove('hover'); s.classList.toggle('active',i<selectedRating); }); }
+function selectStar(n){ selectedRating=n; resetStars(); }
+
+async function submitReview(proId){
+  const reviewer=document.getElementById('rv_reviewer').value.trim();
+  const text=document.getElementById('rv_text').value.trim();
+  if(!reviewer){ showToast('❗ Please enter your name.','error'); return; }
+  if(selectedRating===0){ showToast('❗ Please select a star rating.','error'); return; }
+  if(text.length<5){ showToast('❗ Please write a brief review (min 5 chars).','error'); return; }
+
+  try{
+    const res=await fetch(`/.netlify/functions/professionals?action=review&id=${proId}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({reviewer,rating:selectedRating,text})
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||'Failed');
+    // Update local data
+    const pro=allPros.find(p=>p.id===proId);
+    if(pro){ pro.reviews=data.reviews; }
+    showToast('⭐ Review submitted! Thank you.','success');
+    closeReviewModal();
+    renderPros();
+  }catch{
+    showToast('❌ Failed to submit review. Please try again.','error');
+  }
+}
+
+function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
 </html>

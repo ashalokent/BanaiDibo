@@ -94,6 +94,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba
 .detail-val{font-size:14px;color:var(--text);flex:1;word-break:break-word}
 .modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
 
+/* TABS */
+.tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 18px;color:var(--muted);cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:-1px}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+
 /* TOAST */
 #toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 20px;font-size:14px;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:320px}
 #toast.show{transform:translateY(0);opacity:1}
@@ -130,23 +135,44 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba
     <div class="dash-header">
       <div>
         <div class="dash-title">📋 BanaiDibo Dashboard</div>
-        <div class="dash-sub">Manage all service requests</div>
+        <div class="dash-sub">Manage service requests & professionals</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="doLogout()">Log Out</button>
     </div>
 
-    <div class="stats-grid" id="statsGrid"></div>
-
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-      <button class="filter-btn" onclick="setFilter('pending',this)">Pending</button>
-      <button class="filter-btn" onclick="setFilter('accepted',this)">Accepted</button>
-      <button class="filter-btn" onclick="setFilter('rejected',this)">Rejected</button>
-      <input class="search-input" id="searchInput" placeholder="🔍 Search name, service..." oninput="renderList()"/>
-      <button class="btn btn-outline btn-sm" onclick="loadRequests()" style="margin-left:auto">🔄 Refresh</button>
+    <!-- TAB BAR -->
+    <div style="display:flex;gap:8px;margin-bottom:28px;border-bottom:1px solid var(--border);padding-bottom:0">
+      <button class="tab-btn active" id="tab-requests" onclick="switchTab('requests')">📋 Service Requests</button>
+      <button class="tab-btn" id="tab-pros" onclick="switchTab('pros')">👷 Professionals <span id="pendingProBadge" class="hidden" style="background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px">0</span></button>
     </div>
 
-    <div class="requests-list" id="requestsList"><div class="loading">Loading…</div></div>
+    <!-- REQUESTS TAB -->
+    <div id="tabRequests">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setFilter('pending',this)">Pending</button>
+        <button class="filter-btn" onclick="setFilter('accepted',this)">Accepted</button>
+        <button class="filter-btn" onclick="setFilter('rejected',this)">Rejected</button>
+        <input class="search-input" id="searchInput" placeholder="🔍 Search name, service..." oninput="renderList()"/>
+        <button class="btn btn-outline btn-sm" onclick="loadRequests()" style="margin-left:auto">🔄 Refresh</button>
+      </div>
+      <div class="requests-list" id="requestsList"><div class="loading">Loading…</div></div>
+    </div>
+
+    <!-- PROFESSIONALS TAB -->
+    <div id="tabPros" class="hidden">
+      <div class="stats-grid" id="proStatsGrid"></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setProFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setProFilter('pending',this)">Pending</button>
+        <button class="filter-btn" onclick="setProFilter('approved',this)">Approved</button>
+        <button class="filter-btn" onclick="setProFilter('rejected',this)">Rejected</button>
+        <input class="search-input" id="proSearchInput" placeholder="🔍 Search name, profession..." oninput="renderPros()"/>
+        <button class="btn btn-outline btn-sm" onclick="loadPros()" style="margin-left:auto">🔄 Refresh</button>
+      </div>
+      <div class="requests-list" id="prosList"><div class="loading">Loading…</div></div>
+    </div>
   </div>
 </div>
 
@@ -344,7 +370,7 @@ function contactWA(id){
   let num=(r.whatsapp||r.phone).replace(/\D/g,'');
   if(num.length===10) num='91'+num;
   // Fixed: was "FixMate" — now correctly "BanaiDibo"
-  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your ${r.service} request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}\n\nOur team will contact you shortly 👍`;
+  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your ${r.service} request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}\n\nWe are ready to help you 👍`;
   window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
@@ -401,6 +427,177 @@ document.getElementById('detailModal').addEventListener('click', function(e){
   if(e.target===this) closeModal();
 });
 
+// ─── TAB SWITCHING ───
+function switchTab(tab){
+  document.getElementById('tabRequests').classList.toggle('hidden', tab!=='requests');
+  document.getElementById('tabPros').classList.toggle('hidden', tab!=='pros');
+  document.getElementById('tab-requests').classList.toggle('active', tab==='requests');
+  document.getElementById('tab-pros').classList.toggle('active', tab==='pros');
+  if(tab==='pros') loadPros();
+}
+
+// ─── PROFESSIONALS ───
+let allPros = [];
+let currentProFilter = 'all';
+
+async function loadPros(){
+  document.getElementById('prosList').innerHTML = '<div class="loading">Loading…</div>';
+  const token = localStorage.getItem("adminToken");
+  if(!token){ doLogout(); return; }
+  try{
+    const res = await fetch('/.netlify/functions/professionals?all=true', {
+      headers:{ "Authorization": token }
+    });
+    if(res.status===403||res.status===401){ doLogout(); return; }
+    allPros = await res.json();
+    renderProStats();
+    renderPros();
+  }catch{
+    document.getElementById('prosList').innerHTML='<div class="empty-state"><div class="emoji">⚠️</div><div>Failed to load professionals.</div></div>';
+  }
+}
+
+function renderProStats(){
+  const total=allPros.length;
+  const pending=allPros.filter(p=>p.status==='pending').length;
+  const approved=allPros.filter(p=>p.status==='approved').length;
+  const rejected=allPros.filter(p=>p.status==='rejected').length;
+  document.getElementById('proStatsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-num" style="color:var(--text)">${total}</div><div class="stat-lbl">Total Registered</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--yellow)">${pending}</div><div class="stat-lbl">Awaiting Review</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${approved}</div><div class="stat-lbl">Approved</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${rejected}</div><div class="stat-lbl">Rejected</div></div>
+  `;
+  // Update badge
+  const badge = document.getElementById('pendingProBadge');
+  if(pending>0){ badge.textContent=pending; badge.classList.remove('hidden'); }
+  else badge.classList.add('hidden');
+}
+
+function setProFilter(f, btn){
+  currentProFilter=f;
+  document.querySelectorAll('#tabPros .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPros();
+}
+
+function renderPros(){
+  const q=(document.getElementById('proSearchInput').value||'').toLowerCase();
+  let list=[...allPros];
+  if(currentProFilter!=='all') list=list.filter(p=>p.status===currentProFilter);
+  if(q) list=list.filter(p=>(p.name+p.profession+p.address+p.phone).toLowerCase().includes(q));
+
+  const el=document.getElementById('prosList');
+  if(!list.length){ el.innerHTML='<div class="empty-state"><div class="emoji">📭</div><div>No professionals found.</div></div>'; return; }
+
+  const profIcon=(p)=>({'Electrician':'⚡','Plumber':'🔧','House Painter':'🎨','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱'}[p]||'🔩');
+
+  el.innerHTML = list.map(p=>{
+    const avg=p.reviews&&p.reviews.length?(p.reviews.reduce((s,r)=>s+r.rating,0)/p.reviews.length).toFixed(1):null;
+    return`<div class="request-card status-${p.status}" id="procard-${p.id}">
+      <div class="rc-top">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          ${p.photoUrl?`<img src="${p.photoUrl}" style="width:52px;height:62px;border-radius:8px;object-fit:cover;border:2px solid var(--border);flex-shrink:0" alt=""/>`:`<div style="width:52px;height:62px;border-radius:8px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">${profIcon(p.profession)}</div>`}
+          <div>
+            <div class="rc-name">${esc(p.name)}</div>
+            <div class="rc-service">${profIcon(p.profession)} ${esc(p.profession)}</div>
+            <div class="rc-time">🕐 ${timeAgo(p.createdAt)}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="tag tag-${p.status}">${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span>
+          ${avg?`<span style="color:#f59e0b;font-size:13px">★ ${avg}</span>`:''}
+        </div>
+      </div>
+      <div class="rc-grid">
+        <div class="rc-field"><strong>📞 Phone</strong>${esc(p.phone)}</div>
+        <div class="rc-field"><strong>🪪 ID Proof</strong>${esc(p.idProof)}</div>
+        <div class="rc-field"><strong>⏳ Experience</strong>${esc(p.experience||'Not specified')}</div>
+        <div class="rc-field"><strong>🕐 Availability</strong>${esc(p.readiness||'')}</div>
+        <div class="rc-field"><strong>🧰 Own Tools</strong>${esc(p.ownTools)}</div>
+        <div class="rc-field"><strong>📅 Submitted</strong>${new Date(p.createdAt).toLocaleDateString('en-IN')}</div>
+      </div>
+      ${p.address?`<div class="rc-issue">📍 ${esc(p.address)}</div>`:''}
+      ${p.bio?`<div class="rc-issue" style="margin-top:8px">💬 ${esc(p.bio)}</div>`:''}
+      <div class="rc-actions">
+        ${p.status!=='approved'?`<button class="btn btn-success btn-sm" onclick="updateProStatus('${p.id}','approved')">✅ Approve</button>`:''}
+        ${p.status!=='rejected'?`<button class="btn btn-danger btn-sm" onclick="updateProStatus('${p.id}','rejected')">❌ Reject</button>`:''}
+        <button class="btn btn-outline btn-sm" onclick="viewProDetail('${p.id}')">🔍 Details</button>
+        <a href="https://wa.me/91${p.phone}" target="_blank" class="btn btn-outline btn-sm" style="text-decoration:none">💬 WhatsApp</a>
+        <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:rgba(239,68,68,.3)" onclick="deletePro('${p.id}')">🗑️ Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function updateProStatus(id, status){
+  const token=localStorage.getItem("adminToken");
+  try{
+    const res=await fetch(`/.netlify/functions/professionals?id=${id}`,{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json','Authorization':token},
+      body:JSON.stringify({status})
+    });
+    if(!res.ok) throw new Error();
+    const p=allPros.find(x=>x.id===id);
+    if(p){
+      p.status=status;
+      // Send WhatsApp notification
+      let num=(p.phone||'').replace(/\D/g,'');
+      if(num.length===10) num='91'+num;
+      const msg=status==='approved'
+        ?`Hello ${p.name},\n\n🎉 Congratulations! Your professional registration on *BanaiDibo* has been APPROVED ✅\n\nYour profile is now visible to customers looking for ${p.profession} in your area.\n\n– BanaiDibo Team`
+        :`Hello ${p.name},\n\nWe regret to inform you that your registration on *BanaiDibo* could not be approved at this time.\n\nPlease contact us for more details.\n\n– BanaiDibo Team`;
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
+    }
+    renderProStats(); renderPros();
+    showToast(`Professional ${status}.`,'success');
+  }catch{ showToast('❌ Failed to update','error'); }
+}
+
+async function deletePro(id){
+  if(!confirm('Delete this professional? Cannot be undone.')) return;
+  const token=localStorage.getItem("adminToken");
+  try{
+    const res=await fetch(`/.netlify/functions/professionals?id=${id}`,{
+      method:'DELETE', headers:{'Authorization':token}
+    });
+    if(!res.ok) throw new Error();
+    allPros=allPros.filter(p=>p.id!==id);
+    renderProStats(); renderPros();
+    showToast('Professional deleted.','success');
+  }catch{ showToast('❌ Failed to delete','error'); }
+}
+
+function viewProDetail(id){
+  const p=allPros.find(x=>x.id===id);
+  if(!p) return;
+  const avg=p.reviews&&p.reviews.length?(p.reviews.reduce((s,r)=>s+r.rating,0)/p.reviews.length).toFixed(1):null;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="detail-row"><div class="detail-key">Name</div><div class="detail-val">${esc(p.name)}</div></div>
+    <div class="detail-row"><div class="detail-key">Phone</div><div class="detail-val"><a href="tel:${esc(p.phone)}" style="color:var(--accent)">${esc(p.phone)}</a></div></div>
+    <div class="detail-row"><div class="detail-key">Profession</div><div class="detail-val">${esc(p.profession)}</div></div>
+    <div class="detail-row"><div class="detail-key">Experience</div><div class="detail-val">${esc(p.experience||'Not specified')}</div></div>
+    <div class="detail-row"><div class="detail-key">ID Proof</div><div class="detail-val">${esc(p.idProof)}${p.idNumber?` — ${esc(p.idNumber)}`:''}</div></div>
+    <div class="detail-row"><div class="detail-key">Address</div><div class="detail-val">${esc(p.address)}</div></div>
+    <div class="detail-row"><div class="detail-key">Availability</div><div class="detail-val">${esc(p.readiness||'')}</div></div>
+    <div class="detail-row"><div class="detail-key">Own Tools</div><div class="detail-val">${esc(p.ownTools)}</div></div>
+    ${p.bio?`<div class="detail-row"><div class="detail-key">Bio</div><div class="detail-val">${esc(p.bio)}</div></div>`:''}
+    <div class="detail-row"><div class="detail-key">Rating</div><div class="detail-val">${avg?`★ ${avg}/5 (${p.reviews.length} reviews)`:'No reviews yet'}</div></div>
+    <div class="detail-row"><div class="detail-key">Status</div><div class="detail-val"><span class="tag tag-${p.status}">${p.status}</span></div></div>
+    <div class="detail-row"><div class="detail-key">Filed On</div><div class="detail-val">${p.filledDate||''}</div></div>
+    <div class="detail-row"><div class="detail-key">Submitted</div><div class="detail-val">${new Date(p.createdAt).toLocaleString('en-IN')}</div></div>
+    ${p.photoUrl?`<div class="detail-row"><div class="detail-key">Photo</div><div class="detail-val"><img src="${p.photoUrl}" style="width:80px;height:96px;border-radius:8px;object-fit:cover;border:2px solid var(--border)"/></div></div>`:''}
+    ${p.signatureUrl?`<div class="detail-row"><div class="detail-key">Signature</div><div class="detail-val"><img src="${p.signatureUrl}" style="max-width:200px;border-radius:8px;border:1px solid var(--border);background:#fff"/></div></div>`:''}
+  `;
+  document.getElementById('modalActions').innerHTML=`
+    ${p.status!=='approved'?`<button class="btn btn-success btn-sm" onclick="updateProStatus('${p.id}','approved');closeModal()">✅ Approve</button>`:''}
+    ${p.status!=='rejected'?`<button class="btn btn-danger btn-sm" onclick="updateProStatus('${p.id}','rejected');closeModal()">❌ Reject</button>`:''}
+    <button class="btn btn-outline btn-sm" style="color:var(--red)" onclick="deletePro('${p.id}');closeModal()">🗑️ Delete</button>
+  `;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
 // Auto-login if token exists
 window.onload = () => {
   const token = localStorage.getItem("adminToken");
@@ -408,6 +605,9 @@ window.onload = () => {
     document.getElementById('loginWrap').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
     loadRequests();
+    // Load pros silently for badge count
+    fetch('/.netlify/functions/professionals?all=true',{headers:{"Authorization":token}})
+      .then(r=>r.json()).then(data=>{ allPros=data; renderProStats(); }).catch(()=>{});
   }
 };
 </script>
