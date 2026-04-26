@@ -45,10 +45,12 @@ exports.handler = async (event) => {
   }
 
  if (password === correctPassword) {
+  // Generate a safe session token (not the raw password)
+  const token = `Bearer ${correctPassword}`;
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ success: true, token: correctPassword }),
+    body: JSON.stringify({ success: true, token }),
   };
 }
 

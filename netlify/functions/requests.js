@@ -6,23 +6,13 @@ const { getStore } = require("@netlify/blobs");
 
 // ─── Auth helper ─────────────────────────────────────────────────────────────
 function isAdmin(event) {
-  const authHeader =
-    event.headers.authorization ||
-    event.headers.Authorization;
-
-  const ADMIN_PASS = process.env.ADMIN_PASS;
-
-  // No password set on server
-  if (!ADMIN_PASS) return false;
-
-  // Missing or wrong format
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return false;
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  return token === ADMIN_PASS;
+  const auth =
+    event.headers["authorization"] ||
+    event.headers["Authorization"] ||
+    "";
+  const pw = process.env.ADMIN_PASS;
+  if (!pw) return false;
+  return auth === `Bearer ${pw}`;
 }
 
 // ─── CORS headers ─────────────────────────────────────────────────────────────
@@ -97,7 +87,11 @@ exports.handler = async (event) => {
       issue: issue.trim(),
       whatsapp: whatsapp ? whatsapp.replace(/\D/g, "") : null,
       preferredDate: preferredDate || null,
+      preferredProId: body.preferredProId || null,
+      preferredProName: body.preferredProName || null,
       status: "pending",
+      commission: null,
+      completedAt: null,
       createdAt: new Date().toISOString(),
     };
 
@@ -165,7 +159,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: "Invalid JSON" }) };
     }
 
-    const allowed = ["pending", "accepted", "rejected"];
+    const allowed = ["pending", "accepted", "rejected", "completed"];
     if (body.status && !allowed.includes(body.status)) {
       return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: "Invalid status value" }) };
     }
@@ -177,6 +171,10 @@ exports.handler = async (event) => {
       }
       const req = JSON.parse(existing);
       if (body.status) req.status = body.status;
+      if (body.status === "completed" && !req.completedAt) req.completedAt = new Date().toISOString();
+      if (body.commission !== undefined) req.commission = body.commission;
+      if (body.assignedProId !== undefined) req.assignedProId = body.assignedProId;
+      if (body.assignedProName !== undefined) req.assignedProName = body.assignedProName;
       req.updatedAt = new Date().toISOString();
       await store.set(id, JSON.stringify(req));
 
