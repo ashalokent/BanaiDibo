@@ -99,7 +99,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 .tab-btn:hover:not(.active){color:var(--text)}
 
-/* TOAST */
+.tag-completed{background:rgba(59,130,246,.15);color:#60a5fa}
+.commission-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.12);color:var(--green);border-radius:6px;padding:3px 9px;font-size:12px;font-weight:600}
+.modal-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;margin-top:6px}
+.modal-input:focus{border-color:var(--accent)}
 #toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 20px;font-size:14px;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:320px}
 #toast.show{transform:translateY(0);opacity:1}
 #toast.success{border-color:var(--green);color:var(--green)}
@@ -141,9 +144,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba
     </div>
 
     <!-- TAB BAR -->
-    <div style="display:flex;gap:8px;margin-bottom:28px;border-bottom:1px solid var(--border);padding-bottom:0">
-      <button class="tab-btn active" id="tab-requests" onclick="switchTab('requests')">📋 Service Requests</button>
+    <div style="display:flex;gap:8px;margin-bottom:28px;border-bottom:1px solid var(--border);padding-bottom:0;flex-wrap:wrap">
+      <button class="tab-btn active" id="tab-requests" onclick="switchTab('requests')">📋 Requests</button>
       <button class="tab-btn" id="tab-pros" onclick="switchTab('pros')">👷 Professionals <span id="pendingProBadge" class="hidden" style="background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px">0</span></button>
+      <button class="tab-btn" id="tab-services" onclick="switchTab('services')">🔧 Service Status</button>
     </div>
 
     <!-- REQUESTS TAB -->
@@ -153,6 +157,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba
         <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
         <button class="filter-btn" onclick="setFilter('pending',this)">Pending</button>
         <button class="filter-btn" onclick="setFilter('accepted',this)">Accepted</button>
+        <button class="filter-btn" onclick="setFilter('completed',this)">Completed</button>
         <button class="filter-btn" onclick="setFilter('rejected',this)">Rejected</button>
         <input class="search-input" id="searchInput" placeholder="🔍 Search name, service..." oninput="renderList()"/>
         <button class="btn btn-outline btn-sm" onclick="loadRequests()" style="margin-left:auto">🔄 Refresh</button>
@@ -172,6 +177,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba
         <button class="btn btn-outline btn-sm" onclick="loadPros()" style="margin-left:auto">🔄 Refresh</button>
       </div>
       <div class="requests-list" id="prosList"><div class="loading">Loading…</div></div>
+    </div>
+
+    <!-- SERVICE STATUS TAB -->
+    <div id="tabServices" class="hidden">
+      <div style="margin-bottom:20px">
+        <div style="font-size:15px;color:var(--muted);line-height:1.7">This shows live professional availability per service type based on approved registrations. You can also manually mark a service as <strong style="color:var(--red)">Unavailable</strong> (e.g. during a busy period) — customers will see a notice and get an automatic WhatsApp reply.</div>
+      </div>
+      <div id="serviceStatusGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
     </div>
   </div>
 </div>
@@ -241,7 +254,7 @@ async function loadRequests(){
 
   try {
     const res = await fetch('/.netlify/functions/requests', {
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: { "Authorization": token }
     });
     if(res.status === 403 || res.status === 401){ doLogout(); return; }
     allRequests = await res.json();
@@ -259,11 +272,15 @@ function renderStats(){
   const pending = allRequests.filter(r=>r.status==='pending').length;
   const accepted = allRequests.filter(r=>r.status==='accepted').length;
   const rejected = allRequests.filter(r=>r.status==='rejected').length;
+  const completed = allRequests.filter(r=>r.status==='completed').length;
+  const totalCommission = allRequests.filter(r=>r.commission).reduce((s,r)=>s+(parseFloat(r.commission)||0),0);
   document.getElementById('statsGrid').innerHTML = `
     <div class="stat-card"><div class="stat-num" style="color:var(--text)">${total}</div><div class="stat-lbl">Total Requests</div></div>
     <div class="stat-card"><div class="stat-num" style="color:var(--yellow)">${pending}</div><div class="stat-lbl">Pending</div></div>
     <div class="stat-card"><div class="stat-num" style="color:var(--green)">${accepted}</div><div class="stat-lbl">Accepted</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#60a5fa">${completed}</div><div class="stat-lbl">Completed</div></div>
     <div class="stat-card"><div class="stat-num" style="color:var(--red)">${rejected}</div><div class="stat-lbl">Rejected</div></div>
+    ${totalCommission>0?`<div class="stat-card"><div class="stat-num" style="color:var(--green)">₹${totalCommission.toFixed(0)}</div><div class="stat-lbl">Total Commission</div></div>`:''}
   `;
 }
 
@@ -297,6 +314,7 @@ function renderList(){
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span class="tag tag-${r.status}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>
+          ${r.commission?`<span class="commission-badge">💰 ₹${esc(String(r.commission))}</span>`:''}
         </div>
       </div>
       <div class="rc-grid">
@@ -304,12 +322,17 @@ function renderList(){
         <div class="rc-field"><strong>📍 Location</strong>${esc(r.location)}</div>
         ${r.whatsapp?`<div class="rc-field"><strong>💬 WhatsApp</strong>${esc(r.whatsapp)}</div>`:''}
         ${r.preferredDate?`<div class="rc-field"><strong>📅 Preferred Date</strong>${esc(r.preferredDate)}</div>`:''}
+        ${r.preferredProName?`<div class="rc-field"><strong>👷 Requested Pro</strong>${esc(r.preferredProName)}</div>`:''}
+        ${r.assignedProName?`<div class="rc-field"><strong>✅ Assigned Pro</strong>${esc(r.assignedProName)}</div>`:''}
+        ${r.completedAt?`<div class="rc-field"><strong>🏁 Completed</strong>${new Date(r.completedAt).toLocaleDateString('en-IN')}</div>`:''}
       </div>
       <div class="rc-issue">📝 ${esc(r.issue)}</div>
       <div class="rc-actions">
-        ${r.status!=='accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus('${r.id}','accepted')">✅ Accept</button>`:''}
-        ${r.status!=='rejected'?`<button class="btn btn-danger btn-sm" onclick="updateStatus('${r.id}','rejected')">❌ Reject</button>`:''}
-        <button class="btn btn-outline btn-sm" onclick="contactWA('${r.id}')">💬 WhatsApp</button>
+        ${r.status==='pending'?`<button class="btn btn-success btn-sm" onclick="updateStatus('${r.id}','accepted')">✅ Accept</button>`:''}
+        ${r.status==='accepted'?`<button class="btn btn-sm" style="background:#3b82f6;color:#fff" onclick="openCompleteModal('${r.id}')">🏁 Mark Complete</button>`:''}
+        ${r.status!=='rejected'&&r.status!=='completed'?`<button class="btn btn-danger btn-sm" onclick="updateStatus('${r.id}','rejected')">❌ Reject</button>`:''}
+        <button class="btn btn-outline btn-sm" onclick="contactWA('${r.id}')">💬 Customer</button>
+        ${r.status==='accepted'||r.status==='completed'?`<button class="btn btn-outline btn-sm" onclick="sendReviewRequest('${r.id}')">⭐ Request Review</button>`:''}
         <button class="btn btn-outline btn-sm" onclick="viewDetail('${r.id}')">🔍 Details</button>
         <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:rgba(239,68,68,.3)" onclick="deleteReq('${r.id}')">🗑️ Delete</button>
       </div>
@@ -323,8 +346,7 @@ async function updateStatus(id, status){
   try {
     const res = await fetch(`/.netlify/functions/requests?id=${id}`, {
       method:'PATCH',
-      headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` 
-     },
+      headers:{ 'Content-Type':'application/json', 'Authorization': token },
       body: JSON.stringify({ status })
     });
     if(!res.ok) throw new Error();
@@ -353,7 +375,7 @@ async function deleteReq(id){
   try {
     const res = await fetch(`/.netlify/functions/requests?id=${id}`, {
       method:'DELETE',
-     headers: { "Authorization": `Bearer ${token}` }
+      headers:{ 'Authorization': token }
     });
     if(!res.ok) throw new Error();
     allRequests = allRequests.filter(r=>r.id!==id);
@@ -370,9 +392,83 @@ function contactWA(id){
   if(!r) return;
   let num=(r.whatsapp||r.phone).replace(/\D/g,'');
   if(num.length===10) num='91'+num;
-  // Fixed: was "FixMate" — now correctly "BanaiDibo"
-  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your ${r.service} request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}\n\nWe are ready to help you 👍`;
+  const assignedLine = r.assignedProName?`\n👷 Assigned Professional: ${r.assignedProName}`:'';
+  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your *${r.service}* request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}${assignedLine}\n\nWe are coordinating with the right professional for you and will update you shortly. Please do not hesitate to contact us directly at 8798099812.\n\n– BanaiDibo Team`;
   window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function sendReviewRequest(id){
+  const r = allRequests.find(x=>x.id===id);
+  if(!r) return;
+  let num=(r.whatsapp||r.phone).replace(/\D/g,'');
+  if(num.length===10) num='91'+num;
+  const proName = r.assignedProName||'our professional';
+  const msg=`Hello ${r.name} 👋\n\nThank you for using *BanaiDibo* for your *${r.service}* service!\n\nWe hope ${proName} did a great job for you 🙏\n\nWould you like to rate and review their work? It only takes a minute and helps other customers find good professionals.\n\n👉 Visit: https://banaidibo.in → *Find a Pro* → Search for your professional → ⭐ Reviews\n\nYour feedback means a lot!\n\n– BanaiDibo Team`;
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ─── Complete Modal ───
+let completingId = null;
+function openCompleteModal(id){
+  completingId = id;
+  const r = allRequests.find(x=>x.id===id);
+  if(!r) return;
+  document.getElementById('modalContent').innerHTML=`
+    <div style="margin-bottom:16px;color:var(--muted);font-size:14px;line-height:1.7">
+      Mark <strong style="color:var(--text)">${esc(r.name)}'s</strong> ${esc(r.service)} job as <strong style="color:#60a5fa">Completed</strong>.<br/>
+      This will log the job and allow you to record your commission/fee.
+    </div>
+    <div class="detail-row"><div class="detail-key">Customer</div><div class="detail-val">${esc(r.name)}</div></div>
+    <div class="detail-row"><div class="detail-key">Service</div><div class="detail-val">${serviceIcon(r.service)} ${esc(r.service)}</div></div>
+    <div style="margin-top:16px">
+      <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px">Assigned Professional (if not set)</label>
+      <input type="text" id="cm_proName" class="modal-input" placeholder="Professional's name" value="${esc(r.assignedProName||r.preferredProName||'')}"/>
+    </div>
+    <div style="margin-top:14px">
+      <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px">💰 Commission / Booking Fee (₹)</label>
+      <input type="number" id="cm_commission" class="modal-input" placeholder="e.g. 100" min="0" value="${r.commission||''}"/>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Leave blank if no commission for this job.</div>
+    </div>
+    <div style="margin-top:14px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px">
+        <input type="checkbox" id="cm_sendReview" checked style="accent-color:var(--accent);width:15px;height:15px"/>
+        Send review request to customer via WhatsApp after completing
+      </label>
+    </div>
+  `;
+  document.getElementById('modalActions').innerHTML=`
+    <button class="btn btn-sm" style="background:#3b82f6;color:#fff" onclick="confirmComplete()">🏁 Confirm Complete</button>
+    <button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+  `;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
+async function confirmComplete(){
+  const r = allRequests.find(x=>x.id===completingId);
+  if(!r) return;
+  const proName = document.getElementById('cm_proName').value.trim()||null;
+  const commission = document.getElementById('cm_commission').value.trim()||null;
+  const sendReview = document.getElementById('cm_sendReview').checked;
+  const token = localStorage.getItem("adminToken");
+  try{
+    const res = await fetch(`/.netlify/functions/requests?id=${r.id}`,{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json','Authorization':token},
+      body:JSON.stringify({status:'completed',commission,assignedProName:proName,assignedProId:r.preferredProId||null})
+    });
+    if(!res.ok) throw new Error();
+    r.status='completed';
+    r.commission=commission;
+    if(proName) r.assignedProName=proName;
+    r.completedAt=new Date().toISOString();
+    closeModal();
+    renderStats(); renderList();
+    showToast('🏁 Job marked as complete!','success');
+    if(sendReview) sendReviewRequest(r.id);
+  }catch{
+    showToast('❌ Failed to update','error');
+    closeModal();
+  }
 }
 
 function viewDetail(id){
@@ -387,24 +483,30 @@ function viewDetail(id){
     ${r.whatsapp?`<div class="detail-row"><div class="detail-key">WhatsApp</div><div class="detail-val">${esc(r.whatsapp)}</div></div>`:''}
     <div class="detail-row"><div class="detail-key">Issue</div><div class="detail-val">${esc(r.issue)}</div></div>
     ${r.preferredDate?`<div class="detail-row"><div class="detail-key">Preferred Date</div><div class="detail-val">${esc(r.preferredDate)}</div></div>`:''}
+    ${r.preferredProName?`<div class="detail-row"><div class="detail-key">Requested Pro</div><div class="detail-val">${esc(r.preferredProName)}</div></div>`:''}
+    ${r.assignedProName?`<div class="detail-row"><div class="detail-key">Assigned Pro</div><div class="detail-val">${esc(r.assignedProName)}</div></div>`:''}
+    ${r.commission?`<div class="detail-row"><div class="detail-key">Commission</div><div class="detail-val"><span class="commission-badge">💰 ₹${esc(String(r.commission))}</span></div></div>`:''}
     <div class="detail-row"><div class="detail-key">Status</div><div class="detail-val"><span class="tag tag-${r.status}">${r.status}</span></div></div>
     <div class="detail-row"><div class="detail-key">Submitted</div><div class="detail-val">${new Date(r.createdAt).toLocaleString('en-IN')}</div></div>
+    ${r.completedAt?`<div class="detail-row"><div class="detail-key">Completed</div><div class="detail-val">${new Date(r.completedAt).toLocaleString('en-IN')}</div></div>`:''}
     ${r.updatedAt?`<div class="detail-row"><div class="detail-key">Last Updated</div><div class="detail-val">${new Date(r.updatedAt).toLocaleString('en-IN')}</div></div>`:''}
   `;
   document.getElementById('modalActions').innerHTML=`
-    ${r.status!=='accepted'?`<button class="btn btn-success btn-sm" onclick="updateStatus('${r.id}','accepted');closeModal()">✅ Accept</button>`:''}
-    ${r.status!=='rejected'?`<button class="btn btn-danger btn-sm" onclick="updateStatus('${r.id}','rejected');closeModal()">❌ Reject</button>`:''}
-    <button class="btn btn-primary btn-sm" onclick="contactWA('${r.id}')">💬 WhatsApp</button>
+    ${r.status==='pending'?`<button class="btn btn-success btn-sm" onclick="updateStatus('${r.id}','accepted');closeModal()">✅ Accept</button>`:''}
+    ${r.status==='accepted'?`<button class="btn btn-sm" style="background:#3b82f6;color:#fff" onclick="closeModal();openCompleteModal('${r.id}')">🏁 Mark Complete</button>`:''}
+    ${r.status!=='rejected'&&r.status!=='completed'?`<button class="btn btn-danger btn-sm" onclick="updateStatus('${r.id}','rejected');closeModal()">❌ Reject</button>`:''}
+    <button class="btn btn-primary btn-sm" onclick="contactWA('${r.id}')">💬 Customer</button>
+    ${r.status==='accepted'||r.status==='completed'?`<button class="btn btn-outline btn-sm" onclick="sendReviewRequest('${r.id}')">⭐ Request Review</button>`:''}
     <button class="btn btn-outline btn-sm" style="color:var(--red)" onclick="deleteReq('${r.id}');closeModal()">🗑️ Delete</button>
   `;
   document.getElementById('detailModal').classList.remove('hidden');
 }
-function closeModal(){ document.getElementById('detailModal').classList.add('hidden'); }
+function closeModal(){ document.getElementById('detailModal').classList.add('hidden'); completingId=null; }
 
 // ─── Helpers ───
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function serviceIcon(s){
-  return {'Electrician':'⚡','Plumber':'🔧','House Painting':'🎨','AC Repair':'❄️','Carpenter':'🪑','CCTV Repair':'📷','Mobile Repair':'📱'}[s]||'🔩';
+  return {'Electrician':'⚡','Plumber':'🔧','House Painting':'🏠','AC Repair':'❄️','Carpenter':'🪑','CCTV Repair':'📷','Mobile Repair':'📱'}[s]||'🔩';
 }
 function timeAgo(iso){
   if(!iso) return '';
@@ -430,11 +532,53 @@ document.getElementById('detailModal').addEventListener('click', function(e){
 
 // ─── TAB SWITCHING ───
 function switchTab(tab){
-  document.getElementById('tabRequests').classList.toggle('hidden', tab!=='requests');
-  document.getElementById('tabPros').classList.toggle('hidden', tab!=='pros');
-  document.getElementById('tab-requests').classList.toggle('active', tab==='requests');
-  document.getElementById('tab-pros').classList.toggle('active', tab==='pros');
+  ['requests','pros','services'].forEach(t=>{
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('hidden', tab!==t);
+    document.getElementById('tab-'+t).classList.toggle('active', tab===t);
+  });
   if(tab==='pros') loadPros();
+  if(tab==='services') renderServiceStatus();
+}
+
+// ─── SERVICE STATUS ───
+const ADMIN_SERVICES=[
+  {key:'Electrician',icon:'⚡',prof:'Electrician'},
+  {key:'Plumber',icon:'🔧',prof:'Plumber'},
+  {key:'House Painting',icon:'🏠',prof:'House Painter'},
+  {key:'AC Repair',icon:'❄️',prof:'AC Service Expert'},
+  {key:'Carpenter',icon:'🪑',prof:'Carpenter'},
+  {key:'CCTV Repair',icon:'📷',prof:'CCTV Technician'},
+  {key:'Mobile Repair',icon:'📱',prof:'Mobile Repair Technician'},
+];
+
+function renderServiceStatus(){
+  const token=localStorage.getItem("adminToken");
+  // Get pro counts per service from allPros (already loaded or will be)
+  const countByProf=(prof)=>allPros.filter(p=>p.status==='approved'&&p.profession===prof).length;
+
+  document.getElementById('serviceStatusGrid').innerHTML=ADMIN_SERVICES.map(s=>{
+    const count=countByProf(s.prof);
+    const statusColor=count===0?'var(--red)':count<=2?'var(--yellow)':'var(--green)';
+    const statusText=count===0?'No Pros Available':count<=2?`${count} Pro${count!==1?'s':''} Available (Limited)`: `${count} Pros Available`;
+    return`<div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:20px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <span style="font-size:28px">${s.icon}</span>
+        <div>
+          <div style="font-family:var(--font-head);font-size:16px;font-weight:700">${s.key}</div>
+          <div style="font-size:12px;color:${statusColor};font-weight:600;margin-top:2px">${statusText}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${allPros.filter(p=>p.status==='approved'&&p.profession===s.prof).map(p=>`
+          <div style="background:var(--surface);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--muted)">
+            <span style="color:var(--text);font-weight:500">${esc(p.name)}</span><br/>
+            📞 ${esc(p.phone)}
+          </div>
+        `).join('')}
+        ${count===0?`<div style="font-size:13px;color:var(--muted);padding:4px 0">No approved professionals for this service yet.</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ─── PROFESSIONALS ───
@@ -447,7 +591,7 @@ async function loadPros(){
   if(!token){ doLogout(); return; }
   try{
     const res = await fetch('/.netlify/functions/professionals?all=true', {
-      headers: { "Authorization": `Bearer ${token}` }
+      headers:{ "Authorization": token }
     });
     if(res.status===403||res.status===401){ doLogout(); return; }
     allPros = await res.json();
@@ -536,7 +680,7 @@ async function updateProStatus(id, status){
   try{
     const res=await fetch(`/.netlify/functions/professionals?id=${id}`,{
       method:'PATCH',
-      headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+      headers:{'Content-Type':'application/json','Authorization':token},
       body:JSON.stringify({status})
     });
     if(!res.ok) throw new Error();
@@ -561,7 +705,7 @@ async function deletePro(id){
   const token=localStorage.getItem("adminToken");
   try{
     const res=await fetch(`/.netlify/functions/professionals?id=${id}`,{
-      method:'DELETE', headers: { "Authorization": `Bearer ${token}` }
+      method:'DELETE', headers:{'Authorization':token}
     });
     if(!res.ok) throw new Error();
     allPros=allPros.filter(p=>p.id!==id);

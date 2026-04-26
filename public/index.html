@@ -60,7 +60,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .section-title{font-family:var(--font-head);font-size:clamp(26px,4vw,42px);font-weight:800;margin-bottom:16px}
 .section-sub{color:var(--muted);font-size:16px;max-width:500px;line-height:1.6}
 .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-top:48px}
-.service-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:28px 22px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
 .service-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 32px rgba(249,115,22,.15)}
 .service-card.selected{border-color:var(--accent);background:rgba(249,115,22,.07)}
 .service-icon{font-size:36px;margin-bottom:14px}
@@ -159,11 +158,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .photo-upload-area small{color:var(--muted);font-size:12px;display:block;margin-top:4px}
 .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
 .photo-preview{width:100px;height:120px;border-radius:10px;object-fit:cover;border:2px solid var(--accent);margin-top:12px}
-.sig-pad-wrap{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;position:relative;background:var(--card)}
-#sigCanvas{display:block;width:100%;height:160px;cursor:crosshair;touch-action:none}
-.sig-controls{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);justify-content:flex-end}
-.sig-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--muted);padding:6px 12px;font-size:12px;cursor:pointer}
-.sig-btn:hover{color:var(--text)}
+
 .declaration-box{background:rgba(249,115,22,.06);border:1.5px solid rgba(249,115,22,.25);border-radius:12px;padding:20px;margin-bottom:20px}
 .declaration-box p{font-size:14px;color:var(--muted);line-height:1.8}
 .declaration-box strong{color:var(--text)}
@@ -171,7 +166,57 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .progress-bar{background:var(--border);border-radius:999px;height:4px;margin-bottom:32px;overflow:hidden}
 .progress-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s ease}
 
-/* PROFESSIONALS / REVIEWS on Home */
+/* SERVICE AVAILABILITY */
+.service-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:28px 22px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.service-card.unavailable{opacity:.55;cursor:not-allowed}
+.service-card.unavailable:hover{transform:none;box-shadow:none;border-color:var(--border)}
+.svc-avail-badge{position:absolute;bottom:10px;right:10px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;letter-spacing:.5px}
+.svc-avail-badge.open{background:rgba(34,197,94,.15);color:var(--green)}
+.svc-avail-badge.busy{background:rgba(234,179,8,.15);color:var(--yellow)}
+.svc-avail-badge.none{background:rgba(239,68,68,.12);color:var(--red)}
+.unavail-notice{background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:12px;padding:16px 20px;margin-top:12px;display:none;animation:fadeIn .3s ease}
+.unavail-notice p{font-size:14px;color:#f87171;line-height:1.6}
+.unavail-notice strong{color:var(--red)}
+
+/* PRO DASHBOARD */
+#pagePro{padding-top:64px}
+.pro-dash-wrap{max-width:860px;margin:0 auto;padding:50px 5%}
+.pro-login-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:40px;max-width:420px;margin:40px auto}
+.pro-login-box h2{font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:6px}
+.pro-login-box p{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.6}
+.pro-profile-header{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:28px;display:flex;gap:24px;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap}
+.pro-ph-photo{width:80px;height:96px;border-radius:12px;object-fit:cover;border:2px solid var(--accent);flex-shrink:0}
+.pro-ph-photo-placeholder{width:80px;height:96px;border-radius:12px;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0}
+.pro-ph-info{flex:1}
+.pro-ph-name{font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:4px}
+.pro-ph-prof{font-size:15px;color:var(--accent);margin-bottom:4px}
+.pro-ph-location{font-size:13px;color:var(--muted)}
+.pro-stat-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pro-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.pro-chip strong{color:var(--text)}
+.pro-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:600px){.pro-dash-grid{grid-template-columns:1fr}}
+.pro-stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:20px}
+.pro-stat-card .psc-num{font-family:var(--font-head);font-size:32px;font-weight:800}
+.pro-stat-card .psc-label{font-size:13px;color:var(--muted);margin-top:4px}
+.star-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.star-bar-label{font-size:12px;color:var(--muted);width:16px;text-align:right}
+.star-bar-track{flex:1;background:var(--border);border-radius:999px;height:6px;overflow:hidden}
+.star-bar-fill{height:100%;background:#f59e0b;border-radius:999px;transition:width .6s ease}
+.star-bar-count{font-size:12px;color:var(--muted);width:20px}
+.pro-section-title{font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.pro-reviews-feed{display:flex;flex-direction:column;gap:12px}
+.pro-review-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:18px}
+.pro-review-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.pro-reviewer{font-size:14px;font-weight:600}
+.pro-review-date{font-size:12px;color:var(--muted)}
+.pro-review-text{font-size:14px;color:var(--muted);line-height:1.6}
+.pro-review-stars{display:flex;gap:2px}
+.tips-card{background:rgba(249,115,22,.06);border:1.5px solid rgba(249,115,22,.2);border-radius:14px;padding:20px;margin-top:20px}
+.tips-card h4{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent)}
+.tip-item{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;font-size:14px;color:var(--muted);line-height:1.5}
+.tip-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
 #proSection{padding:80px 5%}
 .pro-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin-top:40px}
 .pro-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:24px;transition:all .25s}
@@ -228,6 +273,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
     <a onclick="showPage('home');setTimeout(()=>scrollToAbout(),100);closeMenu()">About</a>
     <a onclick="showPage('pros');closeMenu()">Find a Pro</a>
     <a onclick="showPage('register');closeMenu()">Join as Pro</a>
+    <a onclick="showPage('pro');closeMenu()">My Dashboard</a>
+    <a onclick="showPage('terms');closeMenu()">T&amp;C</a>
     <a class="nav-cta" onclick="showPage('request');closeMenu()">Request Help</a>
   </div>
   <div class="hamburger" onclick="toggleMenu()">
@@ -320,9 +367,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
       <div><div class="footer-brand">Banai<span>Dibo</span></div><div class="footer-tagline">Local service connections, made simple.</div></div>
       <div class="footer-col"><h4>Services</h4><a onclick="showPage('request')">Electrician</a><a onclick="showPage('request')">Plumber</a><a onclick="showPage('request')">AC Repair</a><a onclick="showPage('request')">Carpenter</a></div>
       <div class="footer-col"><h4>More</h4><a onclick="showPage('request')">House Painting</a><a onclick="showPage('request')">CCTV Repair</a><a onclick="showPage('request')">Mobile Repair</a></div>
-      <div class="footer-col"><h4>Company</h4><a onclick="scrollToAbout()">About</a><a onclick="showPage('request')">Request Help</a><a onclick="showPage('register')">Join as Pro</a><a onclick="showPage('pros')">Find a Pro</a><a href="/admin.html">Admin Login</a><a href="https://wa.me/+918798099812" target="_blank">WhatsApp Us</a></div>
+      <div class="footer-col"><h4>Company</h4><a onclick="scrollToAbout()">About</a><a onclick="showPage('request')">Request Help</a><a onclick="showPage('register')">Join as Pro</a><a onclick="showPage('pros')">Find a Pro</a><a onclick="showPage('pro')">Pro Dashboard</a><a onclick="showPage('terms')">Terms &amp; Conditions</a><a href="/admin.html">Admin Login</a><a href="https://wa.me/+918798099812" target="_blank">WhatsApp Us</a></div>
     </div>
-    <div class="footer-bottom"><div>© 2026 BanaiDibo · banaidibo.in</div><div>Built with ❤️ for local communities</div></div>
+    <div class="footer-bottom"><div>© 2026 BanaiDibo · banaidibo.in</div><div style="display:flex;gap:16px;align-items:center"><a onclick="showPage('terms')" style="color:var(--muted);cursor:pointer">Terms &amp; Conditions</a><span>Built with ❤️ for local communities</span></div></div>
   </footer>
 </div>
 
@@ -343,8 +390,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
       </div>
 
       <div id="requestFormWrap">
+        <input type="hidden" id="f_preferred_pro_id"/>
+        <input type="hidden" id="f_preferred_pro_name"/>
+        <div id="preferredProBanner" style="display:none;background:rgba(249,115,22,.08);border:1.5px solid rgba(249,115,22,.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:14px;color:var(--accent)">
+          👷 Requesting: <strong id="preferredProBannerName"></strong> — BanaiDibo will coordinate and connect you. <button onclick="clearPreferredPro()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;margin-left:8px">✕ Remove</button>
+        </div>
         <div class="form-group">
-          <label>Service Type *</label>
           <select id="f_service" onchange="handleServiceChange()">
             <option value="">— Select a service —</option>
             <option value="Electrician">⚡ Electrician</option>
@@ -356,6 +407,10 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
             <option value="Mobile Repair">📱 Mobile Repair</option>
           </select>
           <div class="field-error" id="err_service">Please select a service.</div>
+          <div class="unavail-notice" id="unavailNotice">
+            <p>😔 <strong>No professional currently available</strong> for this service in your area.<br/>
+            You can still submit your request — we'll reach out via WhatsApp as soon as someone becomes available, or you can <a onclick="showPage('register')" style="color:var(--accent);cursor:pointer;text-decoration:underline">register as a professional</a> if you offer this service.</p>
+          </div>
         </div>
 
         <div class="form-row">
@@ -508,7 +563,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
       <!-- STEP 2: ID Proof -->
       <div class="reg-panel" id="rp-2">
         <div class="reg-panel-title">🪪 Identity Proof</div>
-        <div class="reg-panel-sub">Select the type of ID you'll provide. You'll submit the physical document when our team meets you for verification.</div>
+        <div class="reg-panel-sub">Select the type of ID you'll provide for verification.</div>
 
         <div class="form-group">
           <label>ID Proof Type *</label>
@@ -518,13 +573,13 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
             <div class="checkbox-item"><input type="radio" name="idProof" value="Voter ID" id="id3" onchange="clearError('idProofGroup','re_id')"/><label for="id3">🗳️ Voter ID Card</label></div>
             <div class="checkbox-item"><input type="radio" name="idProof" value="Driving Licence" id="id4" onchange="clearError('idProofGroup','re_id')"/><label for="id4">🚗 Driving Licence</label></div>
             <div class="checkbox-item"><input type="radio" name="idProof" value="Passport" id="id5" onchange="clearError('idProofGroup','re_id')"/><label for="id5">📘 Passport</label></div>
-            <div class="checkbox-item"><input type="radio" name="idProof" value="Other ID" id="id6" onchange="clearError('idProofGroup','re_id')"/><label for="id6">🏛️ Other</label></div>
+            <div class="checkbox-item"><input type="radio" name="idProof" value="Government ID" id="id6" onchange="clearError('idProofGroup','re_id')"/><label for="id6">🏛️ Other ID</label></div>
           </div>
           <div class="field-error" id="re_id">Please select an ID proof type.</div>
         </div>
 
         <div class="form-group">
-          <label>ID Number <span style="color:var(--muted);font-size:12px">(For reference)</span></label>
+          <label>ID Number <span style="color:var(--muted);font-size:12px">(optional — for reference)</span></label>
           <input type="text" id="r_idnum" placeholder="e.g. XXXX-XXXX-XXXX " style="letter-spacing:1px"/>
         </div>
 
@@ -629,7 +684,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
       <!-- STEP 5: Photo, Signature & Declaration -->
       <div class="reg-panel" id="rp-5">
         <div class="reg-panel-title">✍️ Verification & Declaration</div>
-        <div class="reg-panel-sub">Upload your passport photo, draw your signature, and declare the information is accurate.</div>
+        <div class="reg-panel-sub">Upload your passport photo and signature, and declare the information is accurate.</div>
 
         <div class="form-group">
           <label>Passport Photo *</label>
@@ -646,22 +701,18 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
         </div>
 
         <div class="form-group">
-  <label>Your Signature *</label>
-
-  <div class="photo-upload-area" onclick="document.getElementById('r_photo').click()">
-    <input type="file" id="r_photo" accept=".jpg,.jpeg,.png" style="display:none" onchange="handlePhotoUpload(event)"/>
-
-    <div id="photoPlaceholder">
-      <div class="upload-icon">✍️</div>
-      <p>Click to upload your signature</p>
-      <small>JPG or PNG • Max 2MB • Clear signature</small>
-    </div>
-
-    <img id="sigPreview" class="photo-preview hidden" alt="Signature Preview"/>
-  </div>
-
-  <div class="field-error" id="re_sig">Please upload your signature above.</div>
-</div>
+          <label>Your Signature *</label>
+          <div class="photo-upload-area" id="sigUploadArea" onclick="document.getElementById('r_sig').click()">
+            <input type="file" id="r_sig" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleSignatureUpload(event)"/>
+            <div id="sigPlaceholder">
+              <div class="upload-icon">✍️</div>
+              <p>Click to upload your signature photo</p>
+              <small>JPG or PNG • Max 2MB • Clear signature on white paper</small>
+            </div>
+            <img id="sigPreview" class="photo-preview hidden" alt="Signature Preview" style="width:auto;max-width:260px;height:100px;object-fit:contain;border:2px solid var(--accent);margin-top:12px;border-radius:8px;background:#fff;padding:6px"/>
+          </div>
+          <div class="field-error" id="re_sig">Please upload your signature image.</div>
+        </div>
 
         <div class="form-group">
           <label>Date of Filling *</label>
@@ -672,6 +723,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
         <div class="declaration-box">
           <p>I, <strong id="declName">[Your Name]</strong>, hereby declare that all information provided in this registration form is <strong>true, accurate, and complete</strong> to the best of my knowledge. I understand that any false information may result in immediate removal from the BanaiDibo platform. I consent to BanaiDibo displaying my professional profile to customers seeking services in my area. I agree to maintain professional conduct in all service interactions.</p>
         </div>
+
+        <div class="checkbox-item" style="margin-bottom:12px">
+          <input type="checkbox" id="r_tc" onchange="clearError('r_tc','re_tc')"/>
+          <label for="r_tc">I have read and agree to the <a onclick="showPage('terms')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Terms &amp; Conditions</a> of BanaiDibo ✅</label>
+        </div>
+        <div class="field-error" id="re_tc">You must agree to the Terms &amp; Conditions to proceed.</div>
 
         <div class="checkbox-item" style="margin-bottom:20px">
           <input type="checkbox" id="r_agree" onchange="clearError('r_agree','re_agree')"/>
@@ -694,6 +751,247 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
   </footer>
 </div>
 
+<!-- ═══ PRO DASHBOARD PAGE ═══ -->
+<div id="pagePro" class="page hidden">
+  <div class="pro-dash-wrap">
+    <div class="section-label">For Professionals</div>
+    <div style="font-family:var(--font-head);font-size:clamp(22px,4vw,34px);font-weight:800;margin-bottom:6px">Your Professional Dashboard</div>
+    <div style="color:var(--muted);font-size:14px;margin-bottom:32px">View your ratings, reviews, and profile as customers see it.</div>
+
+    <!-- LOGIN PANEL -->
+    <div id="proDashLogin">
+      <div class="pro-login-box">
+        <h2>👷 Pro Login</h2>
+        <p>Enter your registered WhatsApp / phone number to access your dashboard.</p>
+        <div class="form-group">
+          <label>Your Phone Number *</label>
+          <input type="tel" id="pd_phone" maxlength="10" placeholder="10-digit number" oninput="this.value=this.value.replace(/\D/g,'')"/>
+        </div>
+        <div id="pd_error" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none">❌ No approved professional found with that number. Please check and try again.</div>
+        <button class="btn btn-primary" style="width:100%" onclick="proDashLogin()">View My Dashboard →</button>
+        <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center">Not registered yet? <a onclick="showPage('register')" style="color:var(--accent);cursor:pointer">Sign up as a professional</a></p>
+      </div>
+    </div>
+
+    <!-- DASHBOARD PANEL -->
+    <div id="proDashContent" class="hidden">
+      <!-- Profile Header -->
+      <div class="pro-profile-header" id="pdHeader"></div>
+
+      <!-- Stats Grid -->
+      <div class="pro-dash-grid" id="pdStatsGrid"></div>
+
+      <!-- Rating Breakdown -->
+      <div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px" id="pdRatingBreakdown"></div>
+
+      <!-- Tips for improving score -->
+      <div class="tips-card">
+        <h4>💡 Tips to Improve Your Rating</h4>
+        <div class="tip-item"><span class="tip-icon">⏰</span><span>Always arrive on time or inform the customer in advance if you'll be late.</span></div>
+        <div class="tip-item"><span class="tip-icon">🧹</span><span>Clean up your work area before leaving — customers notice and appreciate it.</span></div>
+        <div class="tip-item"><span class="tip-icon">💬</span><span>Communicate clearly about costs and timelines before starting any work.</span></div>
+        <div class="tip-item"><span class="tip-icon">🔄</span><span>Follow up after the job to make sure the customer is happy with the result.</span></div>
+        <div class="tip-item"><span class="tip-icon">🧰</span><span>Come fully prepared with your tools so there are no unnecessary delays.</span></div>
+      </div>
+
+      <!-- Reviews -->
+      <div style="margin-top:28px">
+        <div class="pro-section-title">⭐ Customer Reviews <span id="pdReviewCount" style="color:var(--muted);font-size:14px;font-weight:400"></span></div>
+        <div class="pro-reviews-feed" id="pdReviewsList"></div>
+      </div>
+
+      <div style="margin-top:32px;text-align:center">
+        <button class="btn btn-outline" onclick="proDashLogout()">← Log Out</button>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-bottom" style="border-top:1px solid var(--border);padding-top:24px">
+      <div>© 2026 BanaiDibo</div>
+      <a onclick="showPage('home')" style="cursor:pointer;color:var(--accent)">← Back to Home</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ TERMS & CONDITIONS PAGE ═══ -->
+<div id="pageTerms" class="page hidden">
+  <div style="padding-top:64px">
+    <div style="max-width:780px;margin:0 auto;padding:60px 5% 80px">
+
+      <div class="section-label">Legal</div>
+      <div style="font-family:var(--font-head);font-size:clamp(26px,4vw,42px);font-weight:800;margin-bottom:8px">Terms &amp; Conditions</div>
+      <div style="color:var(--muted);font-size:14px;margin-bottom:40px">Last updated: April 2026 &nbsp;·&nbsp; BanaiDibo, Kohima, Nagaland</div>
+
+      <div style="background:rgba(249,115,22,.07);border:1.5px solid rgba(249,115,22,.25);border-radius:14px;padding:18px 22px;margin-bottom:36px;font-size:14px;color:var(--muted);line-height:1.8">
+        BANAIDIBO acts as a service platform that connects customers with independent service providers (plumbers, electricians, house painting, etc.). By using our platform, both customers and service providers agree to the following terms.
+      </div>
+
+      <!-- Section 1 -->
+      <div style="margin-bottom:32px">
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <span style="background:var(--accent);color:#fff;border-radius:6px;padding:2px 10px;font-size:13px">1</span> Nature of Service
+        </div>
+        <div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Banaidibo is an <strong style="color:var(--text)">intermediary platform</strong> and does not directly provide services.</span></div>
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>All services are performed by <strong style="color:var(--text)">independent service providers</strong> registered with BANAIDIBO.</span></div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div style="margin-bottom:32px">
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <span style="background:var(--accent);color:#fff;border-radius:6px;padding:2px 10px;font-size:13px">2</span> For Customers
+        </div>
+        <div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:18px">
+
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Booking &amp; Confirmation</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Customers can book services via phone, WhatsApp, or online.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Bookings are confirmed only after acceptance by a service provider.</span></div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Pricing &amp; Payment</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Prices may vary depending on the service and provider.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Final charges may be agreed upon between the customer and service provider.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Payments can be made directly to BANAIDIBO.</span></div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Customer Responsibility</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Provide accurate service details and location.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Ensure safe access to the service area.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Be available at the scheduled time.</span></div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Cancellations</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Customers must inform in advance for cancellations.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Repeated or last-minute cancellations may lead to service restrictions.</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div style="margin-bottom:32px">
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <span style="background:var(--accent);color:#fff;border-radius:6px;padding:2px 10px;font-size:13px">3</span> For Service Providers
+        </div>
+        <div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:18px">
+
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Registration &amp; Verification</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Service providers must provide valid identification and relevant skills proof.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>BANAIDIBO reserves the right to approve or reject registrations.</span></div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Service Responsibility</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Providers are responsible for delivering quality service.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Must behave professionally with customers at all times.</span></div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Pricing &amp; Payments</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Providers must clearly communicate pricing before starting work.</span></div>
+              <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Commission must be paid to BANAIDIBO as agreed.</span></div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Conduct</div>
+            <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Misconduct, fraud, or poor service may result in <strong style="color:var(--red)">suspension or removal</strong> from the platform.</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section 4 -->
+      <div style="margin-bottom:32px">
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <span style="background:var(--accent);color:#fff;border-radius:6px;padding:2px 10px;font-size:13px">4</span> Liability Disclaimer
+        </div>
+        <div style="background:rgba(239,68,68,.06);border:1.5px solid rgba(239,68,68,.2);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--red);flex-shrink:0;margin-top:2px">▸</span><span>BANAIDIBO is <strong style="color:var(--text)">not responsible</strong> for the quality, safety, or outcome of services provided.</span></div>
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--red);flex-shrink:0;margin-top:2px">▸</span><span>Any disputes regarding service quality, damage, or payment must be resolved between the customer and the service provider.</span></div>
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--green);flex-shrink:0;margin-top:2px">▸</span><span>However, BANAIDIBO may assist in resolving disputes when possible.</span></div>
+        </div>
+      </div>
+
+      <!-- Sections 5–9 -->
+      <div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:32px">
+
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">5.</span> Delays &amp; Availability</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>BANAIDIBO does not guarantee immediate availability of service providers.</span></div>
+            <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Delays may occur due to traffic, workload, or unforeseen circumstances.</span></div>
+          </div>
+        </div>
+
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">6.</span> Safety &amp; Security</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>Both customers and service providers must maintain respectful and safe behavior.</span></div>
+            <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--red);flex-shrink:0;margin-top:2px">▸</span><span>Any illegal or unsafe activity will lead to <strong style="color:var(--text)">termination of access</strong> to the platform.</span></div>
+          </div>
+        </div>
+
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">7.</span> Termination of Service</div>
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>BANAIDIBO reserves the right to suspend or terminate access for any user who violates these terms.</span></div>
+        </div>
+
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">8.</span> Changes to Terms</div>
+          <div style="display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.7"><span style="color:var(--accent);flex-shrink:0;margin-top:2px">▸</span><span>BANAIDIBO may update these Terms &amp; Conditions at any time without prior notice.</span></div>
+        </div>
+
+        <div style="padding:20px 24px">
+          <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">9.</span> Contact Information</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)">
+              <span style="font-size:20px">📞</span>
+              <span>Phone / WhatsApp: <a href="tel:8798099812" style="color:var(--accent);text-decoration:none;font-weight:600">8798099812</a></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)">
+              <span style="font-size:20px">✉️</span>
+              <span>Email: <a href="mailto:banaidibo@gmail.com" style="color:var(--accent);text-decoration:none;font-weight:600">banaidibo@gmail.com</a></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;padding-top:8px">
+        <button class="btn btn-primary" onclick="showPage('home')" style="margin-right:10px">← Back to Home</button>
+        <button class="btn btn-outline" onclick="showPage('register')">📝 Register as Professional</button>
+      </div>
+
+    </div>
+  </div>
+  <footer>
+    <div class="footer-bottom" style="border-top:1px solid var(--border);padding-top:24px">
+      <div>© 2026 BanaiDibo</div>
+      <a onclick="showPage('home')" style="cursor:pointer;color:var(--accent)">← Back to Home</a>
+    </div>
+  </footer>
+</div>
+
 <script>
 const SERVICES=[
   {icon:'⚡',name:'Electrician',desc:'Wiring, short circuits, panel work, fan/light installation'},
@@ -705,15 +1003,47 @@ const SERVICES=[
   {icon:'📱',name:'Mobile Repair',desc:'Screen replacement, battery, charging port, software'},
 ];
 
-function buildServicesGrid(){
-  document.getElementById('serviceGrid').innerHTML=SERVICES.map(s=>`
-    <div class="service-card" onclick="pickService('${s.name}')">
+function buildServicesGrid(availMap={}){
+  document.getElementById('serviceGrid').innerHTML=SERVICES.map(s=>{
+    const key=s.name;
+    const count=availMap[key];
+    let badge='';
+    let unavailClass='';
+    if(count===undefined){
+      badge='';
+    } else if(count===0){
+      badge=`<span class="svc-avail-badge none">Unavailable</span>`;
+      unavailClass=' unavailable';
+    } else if(count<=2){
+      badge=`<span class="svc-avail-badge busy">Limited (${count})</span>`;
+    } else {
+      badge=`<span class="svc-avail-badge open">Available</span>`;
+    }
+    return `<div class="service-card${unavailClass}" onclick="pickService('${s.name}')">
       <div class="service-check">✓</div>
       <div class="service-icon">${s.icon}</div>
       <div class="service-name">${s.name}</div>
       <div class="service-desc">${s.desc}</div>
-    </div>
-  `).join('');
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+async function loadServiceAvailability(){
+  try{
+    const r=await fetch('/.netlify/functions/professionals');
+    const pros=await r.json();
+    window._cachedPros=pros;
+    const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painting':'House Painter','AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician'};
+    const availMap={};
+    SERVICES.forEach(s=>{
+      const profName=MAP[s.name]||s.name;
+      availMap[s.name]=pros.filter(p=>p.status==='approved'&&p.profession===profName).length;
+    });
+    buildServicesGrid(availMap);
+  }catch{
+    buildServicesGrid({});
+  }
 }
 
 function pickService(name){
@@ -727,26 +1057,49 @@ function pickService(name){
 }
 
 function showPage(p){
-  ['home','request','register','pros'].forEach(pg=>{
-    document.getElementById('page'+pg.charAt(0).toUpperCase()+pg.slice(1)).classList.toggle('hidden',p!==pg);
+  ['home','request','register','pros','pro','terms'].forEach(pg=>{
+    const id='page'+pg.charAt(0).toUpperCase()+pg.slice(1);
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('hidden',p!==pg);
   });
   window.scrollTo(0,0);
   if(p==='pros') loadPros();
   if(p==='register'){
-  const today=new Date().toISOString().split('T')[0];
-  document.getElementById('r_date').value=today;
-  document.getElementById('r_date').max=today;
-}
+    const today=new Date().toISOString().split('T')[0];
+    document.getElementById('r_date').value=today;
+    document.getElementById('r_date').max=today;
+  }
 }
 
-// ── Show preferred date field for all services ──
-function handleServiceChange(){
+// ── Show preferred date field for all services + availability check ──
+async function handleServiceChange(){
   const val = document.getElementById('f_service').value;
   document.getElementById('dateGroup').style.display = val ? 'block' : 'none';
-  // Set min date to today
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('f_date').min = today;
   clearError('f_service','err_service');
+  const notice = document.getElementById('unavailNotice');
+  notice.style.display = 'none';
+  if(!val) return;
+  // Map request service name to pro profession name
+  const MAP = {
+    'Electrician':'Electrician','Plumber':'Plumber','House Painting':'House Painter',
+    'AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician'
+  };
+  const profName = MAP[val]||val;
+  // Use cached pros if available, else fetch
+  let pros = window._cachedPros;
+  if(!pros){
+    try{
+      const r = await fetch('/.netlify/functions/professionals');
+      pros = await r.json();
+      window._cachedPros = pros;
+    }catch{ pros=[]; }
+  }
+  const available = pros.filter(p=>p.status==='approved'&&p.profession===profName);
+  if(available.length===0){
+    notice.style.display='block';
+  }
 }
 
 function toggleMenu(){ document.getElementById('navLinks').classList.toggle('open'); }
@@ -777,6 +1130,8 @@ async function submitRequest(){
   const issue=document.getElementById('f_issue').value.trim();
   const whatsapp=document.getElementById('f_whatsapp').value.trim();
   const date=document.getElementById('f_date').value||null;
+  const preferredProId=document.getElementById('f_preferred_pro_id').value||null;
+  const preferredProName=document.getElementById('f_preferred_pro_name').value||null;
 
   // ── Validate ──
   let valid=true;
@@ -795,10 +1150,23 @@ async function submitRequest(){
     const res = await fetch('/.netlify/functions/requests', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({service,name,phone,location,issue,whatsapp:whatsapp||null,preferredDate:date})
+      body:JSON.stringify({service,name,phone,location,issue,whatsapp:whatsapp||null,preferredDate:date,preferredProId,preferredProName})
     });
     const data = await res.json();
     if(!res.ok) throw new Error(data.error||'Failed');
+
+    // Check if any pro was available for this service
+    const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painting':'House Painter','AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician'};
+    const profName=MAP[service]||service;
+    const cached=window._cachedPros||[];
+    const noPro=cached.length>0 && cached.filter(p=>p.status==='approved'&&p.profession===profName).length===0;
+    if(noPro){
+      // Auto-open WhatsApp with "no availability" message to customer
+      const waNum=(whatsapp||phone).replace(/\D/g,'');
+      const fullNum=waNum.length===10?'91'+waNum:waNum;
+      const msg=`Hello ${name},\n\nThank you for requesting *${service}* via BanaiDibo 🙏\n\nWe're sorry — there is currently *no professional available* for this service in your area.\n\nWe have recorded your request and will contact you as soon as a verified professional becomes available.\n\nFor urgent help, please call us: 8798099812\n\n– BanaiDibo Team`;
+      setTimeout(()=>window.open(`https://wa.me/${fullNum}?text=${encodeURIComponent(msg)}`,'_blank'),800);
+    }
 
     document.getElementById('requestFormWrap').style.display='none';
     document.getElementById('formSuccess').classList.remove('hidden');
@@ -807,11 +1175,12 @@ async function submitRequest(){
     setTimeout(()=>{
       document.getElementById('requestFormWrap').style.display='block';
       document.getElementById('formSuccess').classList.add('hidden');
-      ['f_service','f_name','f_phone','f_location','f_issue','f_date','f_whatsapp'].forEach(id=>{
+      ['f_service','f_name','f_phone','f_location','f_issue','f_date','f_whatsapp','f_preferred_pro_id','f_preferred_pro_name'].forEach(id=>{
         const el=document.getElementById(id);
         if(el) el.value='';
       });
       document.getElementById('dateGroup').style.display='none';
+      document.getElementById('preferredProBanner').style.display='none';
       btn.disabled=false;
       btn.textContent='Submit Request 🚀';
     },5000);
@@ -829,7 +1198,138 @@ function showToast(msg,type='success'){
   setTimeout(()=>{ t.className=''; },3500);
 }
 
-buildServicesGrid();
+loadServiceAvailability();
+
+// ══════════════════════════════
+//  PRO DASHBOARD
+// ══════════════════════════════
+let currentProData = null;
+
+async function proDashLogin(){
+  const phone = document.getElementById('pd_phone').value.trim();
+  if(!/^[6-9]\d{9}$/.test(phone)){
+    document.getElementById('pd_error').textContent='❌ Please enter a valid 10-digit phone number.';
+    document.getElementById('pd_error').style.display='block';
+    return;
+  }
+  document.getElementById('pd_error').style.display='none';
+  try{
+    let pros = window._cachedPros;
+    if(!pros){
+      const r=await fetch('/.netlify/functions/professionals');
+      pros=await r.json();
+      window._cachedPros=pros;
+    }
+    const pro = pros.find(p=>p.phone===phone&&p.status==='approved');
+    if(!pro){
+      document.getElementById('pd_error').textContent='❌ No approved professional found with that number. Please check and try again, or wait for your application to be approved.';
+      document.getElementById('pd_error').style.display='block';
+      return;
+    }
+    currentProData=pro;
+    renderProDash(pro);
+    document.getElementById('proDashLogin').classList.add('hidden');
+    document.getElementById('proDashContent').classList.remove('hidden');
+  }catch{
+    document.getElementById('pd_error').textContent='❌ Could not connect. Please try again.';
+    document.getElementById('pd_error').style.display='block';
+  }
+}
+
+function proDashLogout(){
+  currentProData=null;
+  document.getElementById('proDashLogin').classList.remove('hidden');
+  document.getElementById('proDashContent').classList.add('hidden');
+  document.getElementById('pd_phone').value='';
+  document.getElementById('pd_error').style.display='none';
+}
+
+function renderProDash(p){
+  const reviews=p.reviews||[];
+  const avg=reviews.length?(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length):0;
+  const avgStr=avg?avg.toFixed(1):'—';
+
+  // Header
+  const avatar=p.photoUrl
+    ?`<img src="${p.photoUrl}" class="pro-ph-photo" alt=""/>`
+    :`<div class="pro-ph-photo-placeholder">${profIcon(p.profession)}</div>`;
+  document.getElementById('pdHeader').innerHTML=`
+    ${avatar}
+    <div class="pro-ph-info">
+      <div class="pro-ph-name">${escH(p.name)}</div>
+      <div class="pro-ph-prof">${profIcon(p.profession)} ${escH(p.profession)}</div>
+      <div class="pro-ph-location">📍 ${escH((p.address||'').split(',').slice(-3).join(', '))}</div>
+      <div class="pro-stat-chips">
+        <div class="pro-chip">🕐 <strong>${escH(p.readiness||'—')}</strong></div>
+        <div class="pro-chip">⏳ <strong>${escH(p.experience||'Not specified')}</strong></div>
+        <div class="pro-chip">🧰 Own tools: <strong>${escH(p.ownTools||'—')}</strong></div>
+      </div>
+    </div>
+  `;
+
+  // Stats
+  const fiveStar=reviews.filter(r=>r.rating===5).length;
+  const badReviews=reviews.filter(r=>r.rating<=2).length;
+  document.getElementById('pdStatsGrid').innerHTML=`
+    <div class="pro-stat-card">
+      <div class="psc-num" style="color:var(--accent)">${avgStr}</div>
+      <div class="psc-label">Average Rating</div>
+      <div style="display:flex;gap:3px;margin-top:8px">${[1,2,3,4,5].map(i=>`<span style="font-size:18px;color:${i<=Math.round(avg)?'#f59e0b':'#4a4a60'}">★</span>`).join('')}</div>
+    </div>
+    <div class="pro-stat-card">
+      <div class="psc-num" style="color:var(--text)">${reviews.length}</div>
+      <div class="psc-label">Total Reviews</div>
+    </div>
+    <div class="pro-stat-card">
+      <div class="psc-num" style="color:var(--green)">${fiveStar}</div>
+      <div class="psc-label">5-Star Reviews ⭐⭐⭐⭐⭐</div>
+    </div>
+    <div class="pro-stat-card">
+      <div class="psc-num" style="color:${badReviews>0?'var(--red)':'var(--green)'}">${badReviews}</div>
+      <div class="psc-label">Low Ratings (1–2 ★)</div>
+    </div>
+  `;
+
+  // Rating breakdown bars
+  const counts=[5,4,3,2,1].map(n=>({n,c:reviews.filter(r=>r.rating===n).length}));
+  const maxC=Math.max(...counts.map(x=>x.c),1);
+  document.getElementById('pdRatingBreakdown').innerHTML=`
+    <div class="pro-section-title" style="margin-bottom:16px">📊 Rating Breakdown</div>
+    ${counts.map(({n,c})=>`
+      <div class="star-bar-row">
+        <span class="star-bar-label">${n}</span>
+        <span style="font-size:13px;color:#f59e0b;margin-right:4px">★</span>
+        <div class="star-bar-track"><div class="star-bar-fill" style="width:${reviews.length?Math.round(c/reviews.length*100):0}%"></div></div>
+        <span class="star-bar-count">${c}</span>
+      </div>
+    `).join('')}
+    ${reviews.length===0?`<div style="text-align:center;color:var(--muted);font-size:14px;padding:20px">No reviews yet. Complete jobs to get your first review!</div>`:''}
+  `;
+
+  // Reviews feed
+  document.getElementById('pdReviewCount').textContent=reviews.length?`(${reviews.length})`:'';
+  const feed=document.getElementById('pdReviewsList');
+  if(!reviews.length){
+    feed.innerHTML=`<div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:32px;text-align:center;color:var(--muted)">
+      <div style="font-size:36px;margin-bottom:12px">⭐</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">No reviews yet</div>
+      <div style="font-size:14px">After customers receive your service, they can rate and review you here.</div>
+    </div>`;
+    return;
+  }
+  feed.innerHTML=[...reviews].reverse().map(r=>`
+    <div class="pro-review-card">
+      <div class="pro-review-top">
+        <div>
+          <div class="pro-reviewer">${escH(r.reviewer)}</div>
+          <div class="pro-review-date">${new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</div>
+        </div>
+        <div class="pro-review-stars">${[1,2,3,4,5].map(i=>`<span style="font-size:16px;color:${i<=r.rating?'#f59e0b':'#4a4a60'}">★</span>`).join('')}</div>
+      </div>
+      <div class="pro-review-text">${escH(r.text)}</div>
+    </div>
+  `).join('');
+}
 
 // ══════════════════════════════
 //  REGISTRATION WIZARD
@@ -837,7 +1337,7 @@ buildServicesGrid();
 let currentStep = 1;
 const TOTAL_STEPS = 5;
 let photoDataUrl = null;
-let signatureDataUrl = null;
+let sigDataUrl = null;
 
 function updateStepUI(step) {
   for(let i=1;i<=TOTAL_STEPS;i++){
@@ -927,34 +1427,30 @@ function handlePhotoUpload(e){
   };
   reader.readAsDataURL(file);
 }
+
 function handleSignatureUpload(e){
-  const file = e.target.files[0];
+  const file=e.target.files[0];
   if(!file) return;
-
-  if(file.size > 2 * 1024 * 1024){
-    showToast('❌ Signature must be under 2MB','error');
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = (ev)=>{
-    signatureDataUrl = ev.target.result;
-
-    const img = document.getElementById('sigPreview');
-    img.src = signatureDataUrl;
+  if(file.size>2*1024*1024){ showToast('❌ Signature image must be under 2MB','error'); return; }
+  const reader=new FileReader();
+  reader.onload=(ev)=>{
+    sigDataUrl=ev.target.result;
+    document.getElementById('sigPlaceholder').style.display='none';
+    const img=document.getElementById('sigPreview');
+    img.src=sigDataUrl;
     img.classList.remove('hidden');
-
     document.getElementById('re_sig').style.display='none';
   };
-
   reader.readAsDataURL(file);
 }
+
 async function submitRegistration(){
   // Validate step 5
   if(!photoDataUrl){ document.getElementById('re_photo').style.display='block'; showToast('❗ Please upload your passport photo.','error'); return; }
-  if(!signatureDataUrl){ document.getElementById('re_sig').style.display='block'; showToast('❗ Please upload your signature.','error'); return; }
+  if(!sigDataUrl){ document.getElementById('re_sig').style.display='block'; showToast('❗ Please upload your signature image.','error'); return; }
   const date=document.getElementById('r_date').value;
   if(!date){ showError('r_date','re_date'); showToast('❗ Please select the date.','error'); return; }
+  if(!document.getElementById('r_tc').checked){ document.getElementById('re_tc').style.display='block'; showToast('❗ Please agree to the Terms & Conditions.','error'); return; }
   if(!document.getElementById('r_agree').checked){ document.getElementById('re_agree').style.display='block'; showToast('❗ Please agree to the declaration.','error'); return; }
 
   const btn=document.getElementById('regSubmitBtn');
@@ -972,7 +1468,7 @@ async function submitRegistration(){
     readiness: document.querySelector('input[name="readiness"]:checked')?.value||'',
     ownTools: document.querySelector('input[name="ownTools"]:checked')?.value||'',
     photoUrl: photoDataUrl,
-    signatureUrl: signatureDataUrl, // For simplicity, using the same upload for both. In production, you'd want separate fields and validations.
+    signatureUrl: sigDataUrl,
     filledDate: date,
   };
 
@@ -1033,7 +1529,7 @@ function renderPros(){
         <div class="pro-info">
           <div class="pro-name">${escH(p.name)}</div>
           <div class="pro-prof">${profIcon(p.profession)} ${escH(p.profession)}</div>
-          <div class="pro-loc">📍 ${escH((p.address||'').split(',').slice(-2).join(', '))}</div>
+          <div class="pro-loc">📍 ${escH((p.address||'').split(',').slice(-3,-1).join(', ').trim()||'Nagaland')}</div>
         </div>
       </div>
       <div class="star-row">${stars}${avg?`<span class="review-count">${avg} (${p.reviews.length} review${p.reviews.length!==1?'s':''})</span>`:''}</div>
@@ -1041,7 +1537,7 @@ function renderPros(){
       ${p.ownTools==='Yes'?`<div class="pro-tools">🧰 Brings own tools</div>`:''}
       <div style="font-size:12px;color:var(--muted);margin-top:6px">🕐 ${escH(p.readiness||'')}</div>
       <div class="pro-card-actions">
-        <a href="https://wa.me/91${p.phone}" target="_blank" class="btn btn-primary btn-sm" style="padding:7px 14px;font-size:13px;text-decoration:none">💬 WhatsApp</a>
+        <button class="btn btn-primary btn-sm" onclick="requestThisPro('${p.id}','${escH(p.profession)}')" style="padding:7px 14px;font-size:13px">🛠️ Request This Pro</button>
         <button class="btn btn-outline btn-sm" onclick="openReviewModal('${p.id}')">⭐ Reviews</button>
       </div>
     </div>`;
@@ -1056,6 +1552,28 @@ function renderStars(avg){
     else html+=`<span class="star">★</span>`;
   }
   return html;
+}
+
+function requestThisPro(proId, profession){
+  // Map profession name back to service option value
+  const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painter':'House Painting','Carpenter':'Carpenter','AC Service Expert':'AC Repair','CCTV Technician':'CCTV Repair','Mobile Repair Technician':'Mobile Repair'};
+  const serviceVal = MAP[profession]||profession;
+  const pro = allPros.find(p=>p.id===proId);
+  if(!pro) return;
+  // Pre-fill the form
+  showPage('request');
+  document.getElementById('f_service').value = serviceVal;
+  document.getElementById('f_preferred_pro_id').value = proId;
+  document.getElementById('f_preferred_pro_name').value = pro.name;
+  document.getElementById('preferredProBannerName').textContent = pro.name + ' (' + profession + ')';
+  document.getElementById('preferredProBanner').style.display = 'block';
+  handleServiceChange();
+}
+
+function clearPreferredPro(){
+  document.getElementById('f_preferred_pro_id').value='';
+  document.getElementById('f_preferred_pro_name').value='';
+  document.getElementById('preferredProBanner').style.display='none';
 }
 
 function profIcon(p){
