@@ -386,13 +386,14 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
         <button class="btn btn-primary" style="margin-top:28px" onclick="showPage('request')">Get Started →</button>
       </div>
       <div class="about-visual">
-        <div class="av-row"><div class="av-icon">⚡</div><div class="av-text"><strong>Electrician</strong>Wiring, switches, panels</div></div>
-        <div class="av-row"><div class="av-icon">🔧</div><div class="av-text"><strong>Plumber</strong>Leaks, drainage, fittings</div></div>
-        <div class="av-row"><div class="av-icon">🏠</div><div class="av-text"><strong>House Painter</strong>Interior &amp; exterior</div></div>
-        <div class="av-row"><div class="av-icon">❄️</div><div class="av-text"><strong>AC Repair</strong>Service, gas, installation</div></div>
-        <div class="av-row"><div class="av-icon">🪑</div><div class="av-text"><strong>Carpenter</strong>Furniture, doors, cabinets</div></div>
-        <div class="av-row"><div class="av-icon">📷</div><div class="av-text"><strong>CCTV Repair</strong>Installation &amp; servicing</div></div>
-        <div class="av-row"><div class="av-icon">📱</div><div class="av-text"><strong>Mobile Repair</strong>Screen, battery, software</div></div>
+        <div class="av-row"><div class="av-icon">⚡</div><div class="av-text"><strong>Electrician</strong>Eg<p>Wiring, switches, panels</p></div></div>
+        <div class="av-row"><div class="av-icon">🔧</div><div class="av-text"><strong>Plumber</strong>Eg<p>Leaks, drainage, fittings</p></div></div>
+        <div class="av-row"><div class="av-icon">🏠</div><div class="av-text"><strong>House Painter</strong>Eg<p>Interior &amp; exterior</p></div></div>
+        <div class="av-row"><div class="av-icon">❄️</div><div class="av-text"><strong>AC Repair</strong>Eg<p>Service, gas, installation</p></div></div>
+        <div class="av-row"><div class="av-icon">🪑</div><div class="av-text"><strong>Carpenter</strong>Eg<p>Furniture, doors, cabinets</p></div></div>
+        <div class="av-row"><div class="av-icon">📷</div><div class="av-text"><strong>CCTV Repair</strong>Eg<p>Installation &amp; servicing</p></div></div>
+        <div class="av-row"><div class="av-icon">📱</div><div class="av-text"><strong>Mobile Repair</strong>Eg<p>Screen, battery, software</p></div></div>
+        <div class="av-row"><div class="av-icon">🚗</div><div class="av-text"><strong>AutoMobile Repair</strong>Eg <p>Oil changes, braking systems</p></div></div>
       </div>
     </div>
   </section>
@@ -407,7 +408,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
     <div class="footer-grid">
       <div><div class="footer-brand">Banai<span>Dibo</span></div><div class="footer-tagline">Local service connections, made simple.</div></div>
       <div class="footer-col"><h4>Services</h4><a onclick="showPage('request')">Electrician</a><a onclick="showPage('request')">Plumber</a><a onclick="showPage('request')">AC Repair</a><a onclick="showPage('request')">Carpenter</a></div>
-      <div class="footer-col"><h4>More</h4><a onclick="showPage('request')">House Painting</a><a onclick="showPage('request')">CCTV Repair</a><a onclick="showPage('request')">Mobile Repair</a></div>
+      <div class="footer-col"><h4>More</h4><a onclick="showPage('request')">House Painting</a><a onclick="showPage('request')">CCTV Repair</a><a onclick="showPage('request')">Mobile Repair</a><a onclick="showPage('request')">AutoMobile Repair</a></div>
       <div class="footer-col"><h4>Company</h4><a onclick="scrollToAbout()">About</a><a onclick="showPage('request')">Request Help</a><a onclick="showPage('register')">Join as Pro</a><a onclick="showPage('pros')">Find a Pro</a><a onclick="showPage('pro')">Pro Dashboard</a><a onclick="showPage('terms')">Terms &amp; Conditions</a><a href="/admin.html">Admin Login</a><a href="https://wa.me/+918798099812" target="_blank">WhatsApp Us</a></div>
     </div>
     <div class="footer-bottom"><div>© 2026 BanaiDibo · banaidibo.in</div><div style="display:flex;gap:16px;align-items:center"><a onclick="showPage('terms')" style="color:var(--muted);cursor:pointer">Terms &amp; Conditions</a><span>Built with ❤️ for local communities</span></div></div>
@@ -446,6 +447,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
             <option value="Carpenter">🪑 Carpenter</option>
             <option value="CCTV Repair">📷 CCTV Repair</option>
             <option value="Mobile Repair">📱 Mobile Repair</option>
+            <option value="AutoMobile Repair">🚗 AutoMobile Repair</option>
           </select>
           <div class="field-error" id="err_service">Please select a service.</div>
           <div class="unavail-notice" id="unavailNotice">
@@ -516,7 +518,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
             <option value="">All Professions</option>
             <option>Electrician</option><option>Plumber</option><option>House Painter</option>
             <option>Carpenter</option><option>AC Service Expert</option><option>CCTV Technician</option>
-            <option>Mobile Repair Technician</option>
+            <option>Mobile Repair Technician</option><option>AutoMobile Repair Technician</option>
           </select>
           <input id="proSearch" oninput="renderPros()" placeholder="🔍 Search name or location…" style="background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;width:220px"/>
         </div>
@@ -646,6 +648,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
             <option>AC Service Expert</option>
             <option>CCTV Technician</option>
             <option>Mobile Repair Technician</option>
+            <option>AutoMobile Repair Technician</option>
           </select>
           <div class="field-error" id="re_profession">Please select your profession.</div>
         </div>
@@ -1042,6 +1045,7 @@ const SERVICES=[
   {icon:'🪑',name:'Carpenter',desc:'Furniture repair, door fitting, cabinets, shelves'},
   {icon:'📷',name:'CCTV Repair',desc:'Installation, repair, NVR setup, cable work'},
   {icon:'📱',name:'Mobile Repair',desc:'Screen replacement, battery, charging port, software'},
+  {icon:'🚗',name:'AutoMobile Repair',desc:'Routine Maintenance, Engine & Electrical, Mechanical Repair'}
 ];
 
 function buildServicesGrid(availMap={}){
@@ -1125,7 +1129,7 @@ async function handleServiceChange(){
   // Map request service name to pro profession name
   const MAP = {
     'Electrician':'Electrician','Plumber':'Plumber','House Painting':'House Painter',
-    'AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician'
+    'AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician','AutoMobile Repair':'AutoMobile Repair Technician'
   };
   const profName = MAP[val]||val;
   // Use cached pros if available, else fetch
@@ -1197,7 +1201,7 @@ async function submitRequest(){
     if(!res.ok) throw new Error(data.error||'Failed');
 
     // Check if any pro was available for this service
-    const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painting':'House Painter','AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician'};
+    const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painting':'House Painter','AC Repair':'AC Service Expert','Carpenter':'Carpenter','CCTV Repair':'CCTV Technician','Mobile Repair':'Mobile Repair Technician','AutoMobile Repair':'AutoMobile Repair Technician'};
     const profName=MAP[service]||service;
     const cached=window._cachedPros||[];
     const noPro=cached.length>0 && cached.filter(p=>p.status==='approved'&&p.profession===profName).length===0;
@@ -1597,7 +1601,7 @@ function renderStars(avg){
 
 function requestThisPro(proId, profession){
   // Map profession name back to service option value
-  const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painter':'House Painting','Carpenter':'Carpenter','AC Service Expert':'AC Repair','CCTV Technician':'CCTV Repair','Mobile Repair Technician':'Mobile Repair'};
+  const MAP={'Electrician':'Electrician','Plumber':'Plumber','House Painter':'House Painting','Carpenter':'Carpenter','AC Service Expert':'AC Repair','CCTV Technician':'CCTV Repair','Mobile Repair Technician':'Mobile Repair','AutoMobile Repair Technician':'AutoMobile Repair'};
   const serviceVal = MAP[profession]||profession;
   const pro = allPros.find(p=>p.id===proId);
   if(!pro) return;
@@ -1618,7 +1622,7 @@ function clearPreferredPro(){
 }
 
 function profIcon(p){
-  return{'Electrician':'⚡','Plumber':'🔧','House Painter':'🏠','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱'}[p]||'🔩';
+  return{'Electrician':'⚡','Plumber':'🔧','House Painter':'🏠','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱','AutoMobile Repair Technician':'🚗'}[p]||'🔩';
 }
 
 // ══════════════════════════════

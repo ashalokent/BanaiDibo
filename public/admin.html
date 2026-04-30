@@ -357,7 +357,7 @@ async function updateStatus(id, status){
       let num = (r.whatsapp||r.phone).replace(/\D/g,'');
       if(num.length===10) num='91'+num;
       const msg = status==='accepted'
-        ? `Hello ${r.name},\n\nYour ${r.service} request has been ACCEPTED ✅\n\nOur team will contact you shortly.\n\n– BanaiDibo`
+        ? `Hello ${r.name},\n\nYour ${r.service} request has been ACCEPTED ✅\n\nOur team will contact you shortly...\n\n– BanaiDibo`
         : `Hello ${r.name},\n\nWe're sorry 😔\n\nYour ${r.service} request could not be processed at the moment. Please feel free to try again.\n\n– BanaiDibo`;
       window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
     }
@@ -506,7 +506,7 @@ function closeModal(){ document.getElementById('detailModal').classList.add('hid
 // ─── Helpers ───
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function serviceIcon(s){
-  return {'Electrician':'⚡','Plumber':'🔧','House Painting':'🏠','AC Repair':'❄️','Carpenter':'🪑','CCTV Repair':'📷','Mobile Repair':'📱'}[s]||'🔩';
+  return {'Electrician':'⚡','Plumber':'🔧','House Painting':'🏠','AC Repair':'❄️','Carpenter':'🪑','CCTV Repair':'📷','Mobile Repair':'📱','AutoMobile Repair':'🚗'}[s]||'🔩';
 }
 function timeAgo(iso){
   if(!iso) return '';
@@ -549,6 +549,7 @@ const ADMIN_SERVICES=[
   {key:'Carpenter',icon:'🪑',prof:'Carpenter'},
   {key:'CCTV Repair',icon:'📷',prof:'CCTV Technician'},
   {key:'Mobile Repair',icon:'📱',prof:'Mobile Repair Technician'},
+  {key:'AutoMobile Repair',icon:'🚗',prof:'AutoMobile Repair Technician'},
 ];
 
 function renderServiceStatus(){
@@ -635,7 +636,7 @@ function renderPros(){
   const el=document.getElementById('prosList');
   if(!list.length){ el.innerHTML='<div class="empty-state"><div class="emoji">📭</div><div>No professionals found.</div></div>'; return; }
 
-  const profIcon=(p)=>({'Electrician':'⚡','Plumber':'🔧','House Painter':'🏠','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱'}[p]||'🔩');
+  const profIcon=(p)=>({'Electrician':'⚡','Plumber':'🔧','House Painter':'🏠','Carpenter':'🪑','AC Service Expert':'❄️','CCTV Technician':'📷','Mobile Repair Technician':'📱','AutoMobile Repair':'🚗'}[p]||'🔩');
 
   el.innerHTML = list.map(p=>{
     const avg=p.reviews&&p.reviews.length?(p.reviews.reduce((s,r)=>s+r.rating,0)/p.reviews.length).toFixed(1):null;
