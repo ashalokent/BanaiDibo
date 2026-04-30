@@ -39,20 +39,29 @@ exports.handler = async (event) => {
 
   // ── GET all (admin) ──
   if (method === "GET" && params.all === "true") {
-    if (!isAdmin(event)) return { statusCode: 403, headers: CORS, body: JSON.stringify({ error: "Forbidden" }) };
-    try {
-      const { blobs } = await store.list();
-      const items = await Promise.all(
-        blobs.map(async (b) => {
-          try { return JSON.parse(await store.get(b.key)); } catch { return null; }
-        })
-      );
-      const sorted = items.filter(Boolean).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      return { statusCode: 200, headers: CORS, body: JSON.stringify(sorted) };
-    } catch (err) {
-      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: "Failed to load", detail: err.message }) };
-    }
+  if (!isAdmin(event)) return { statusCode: 403, headers: CORS, body: JSON.stringify({ error: "Forbidden" }) };
+  try {
+    const { blobs } = await store.list();
+    const items = await Promise.all(
+      blobs.map(async (b) => {
+        try { return JSON.parse(await store.get(b.key)); } catch { return null; }
+      })
+    );
+    const sorted = items.filter(Boolean).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // Strip base64 image fields — they cause 413 payload too large
+    const trimmed = sorted.map(p => ({
+      ...p,
+      photoUrl: p.photoUrl?.startsWith('data:') ? '[photo]' : p.photoUrl,
+      signatureUrl: p.signatureUrl?.startsWith('data:') ? '[signature]' : p.signatureUrl,
+      idProof: p.idProof?.startsWith('data:') ? '[id_doc]' : p.idProof,
+    }));
+
+    return { statusCode: 200, headers: CORS, body: JSON.stringify(trimmed) };
+  } catch (err) {
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: "Failed to load", detail: err.message }) };
   }
+}
 
   // ── GET all approved professionals (public) ──
   if (method === "GET" && !id) {
