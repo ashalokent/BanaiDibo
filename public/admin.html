@@ -595,10 +595,12 @@ async function loadPros(){
       headers:{ "Authorization": token }
     });
     if(res.status===403||res.status===401){ doLogout(); return; }
+    if(!res.ok) throw new Error(`Server error: ${res.status}`);
     allPros = await res.json();
     renderProStats();
     renderPros();
-  }catch{
+  }catch(err){
+    console.error('Error loading professionals:', err);
     document.getElementById('prosList').innerHTML='<div class="empty-state"><div class="emoji">⚠️</div><div>Failed to load professionals.</div></div>';
   }
 }
