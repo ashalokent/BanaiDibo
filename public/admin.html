@@ -393,7 +393,7 @@ function contactWA(id){
   let num=(r.whatsapp||r.phone).replace(/\D/g,'');
   if(num.length===10) num='91'+num;
   const assignedLine = r.assignedProName?`\n👷 Assigned Professional: ${r.assignedProName}`:'';
-  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your *${r.service}* request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}${assignedLine}\n\nWe are coordinating with the right professional for you and will update you shortly. Please do not hesitate to contact us directly at 8798099812.\n\n– BanaiDibo Team`;
+  const msg=`Hello ${r.name},\n\nThis is BanaiDibo regarding your *${r.service}* request.\n\n📍 Location: ${r.location}\n📝 Issue: ${r.issue}${assignedLine}\n\nWe are coordinating with the right professional for you and will update you shortly. Please do not hesitate to contact us directly at 8798099812 or 8798445848.\n\n– BanaiDibo Team`;
   window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
